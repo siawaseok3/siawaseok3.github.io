@@ -60,20 +60,12 @@ ol {
 
 ol li {
     margin: 10px 0;
-    padding-left: 20px;
+    padding-left: 0; /* 左の余白を無くす */
     position: relative;
-    counter-increment: item;
-}
-
-ol li::before {
-    content: counter(item) ".";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #3498db;
-    font-weight: bold;
-    font-size: 1.2em;
+    list-style-type: decimal; /* 通常の番号に戻す */
+    color: #333; /* 青色ではなく黒色に変更 */
+    font-weight: normal; /* 通常の太さに変更 */
+    font-size: 1em;
 }
 
 a {
