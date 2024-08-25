@@ -3,51 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>マイクラ</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-        }
-        .video {
-            margin-bottom: 20px;
-        }
-        .video iframe {
-            width: 100%;
-            height: 315px;
-        }
-        .video-description {
-            text-align: center;
-            margin-top: 10px;
-        }
-    </style>
+    <title>YukiYouTubeの作り方</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Minecraft Videos</h1>
-        
-        <div class="video">
-            <!-- 動画の埋め込みコードをここに追加 -->
-            <p class="video-description">動画の説明</p>
-        </div>
-        
-        <div class="video">
-            <!-- 動画の埋め込みコードをここに追加 -->
-            <p class="video-description">動画の説明</p>
-        </div>
-        
-        
-    </div>
+    <h1>YukiYouTubeの作り方</h1>
+    
+    <h2>面倒くさくて最低限で良い人の場合</h2>
+    <ol>
+        <li><a href="https://render.com/deploy?repo=https://github.com/siawaseok3/slim-2-by-siawaseok.git">こちら</a>を開く。</li>
+    </ol>
+
+    <h2>普通の人の場合</h2>
+    
+    <h3>初めに</h3>
+    <ol>
+        <li><a href="https://dashboard.render.com/">Render</a>と<a href="https://github.com/join">GitHub</a>または<a href="https://gitlab.com/users/sign_up">GitLab</a>でアカウントを作成。</li>
+        <li>RenderとGitHubまたはGitLabのアカウントを紐付けておくと便利です。</li>
+    </ol>
+
+    <h3>リポジトリの作成</h3>
+    
+    <h4>GitHubの場合</h4>
+    <ol>
+        <li><a href="https://github.com/siawaseok3/slim-2-by-siawaseok">こちら</a>か<a href="https://github.com/mochidukiyukimi/yuki-youtube-slim-2.git">こちら</a>を開く。</li>
+        <li>リポジトリをフォークする。<br>（偽装ページを変更したい場合は、自分がフォークしたリポジトリの<code>blog/index.html</code>ファイルを編集してください）</li>
+    </ol>
+    
+    <h4>GitLabの場合</h4>
+    <ol>
+        <li><strong>マイワーク &rarr; プロジェクト &rarr; 新規プロジェクト &rarr; プロジェクトのインポート &rarr; URLごとのリポジトリ</strong>を選択。</li>
+        <li>プロジェクトを作成。</li>
+    </ol>
+    
+    <h3>デプロイ</h3>
+    <ol>
+        <li><a href="https://dashboard.render.com/web/new">Render Web Service</a>を開く。</li>
+        <li>RenderとGitHubまたはGitLabのアカウントを紐付けている場合は、先ほどフォークしたリポジトリを選択。</li>
+        <li>その他の場合は、<strong>Public Git Repository</strong>を選択してリポジトリのURLを貼り付け、<strong>Connect</strong>を押す。</li>
+        <li><strong>Name</strong>欄の文字を消して、好きな名前に変更（半角英数とハイフンのみ使用可）。</li>
+        <li><strong>Start Command</strong>に<code>uvicorn --port $PORT --host 0.0.0.0 main:app</code>を入力。</li>
+        <li><strong>Instance Type</strong>が有料プランになっているので、<strong>Free</strong>を選択。</li>
+        <li><strong>Deploy Web Service</strong>を押す。</li>
+        <li>デプロイが完了するまで待機。</li>
+    </ol>
 </body>
 </html>
