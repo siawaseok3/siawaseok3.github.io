@@ -18,11 +18,13 @@ body {
 h1, h2 {
     color: #333;
     font-weight: bold;
+    margin-left: 0;
+    margin-bottom: 10px;
 }
 
 h1 {
     font-size: 2.5em;
-    text-align: center;
+    text-align: left;
     margin-bottom: 20px;
 }
 
@@ -31,7 +33,7 @@ h2 {
     margin-top: 40px;
     margin-bottom: 20px;
     padding-bottom: 5px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 2px solid #ddd;
 }
 
 h3 {
@@ -51,19 +53,20 @@ ol {
     padding: 20px;
     margin-left: 20px;
     border-radius: 5px;
-    list-style: decimal inside;
+    list-style-position: inside;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    counter-reset: item;
 }
 
 ol li {
     margin: 10px 0;
     padding-left: 20px;
     position: relative;
+    counter-increment: item;
 }
 
 ol li::before {
     content: counter(item) ".";
-    counter-increment: item;
     position: absolute;
     left: 0;
     top: 50%;
