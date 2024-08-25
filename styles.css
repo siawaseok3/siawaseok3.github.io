@@ -15,7 +15,7 @@ body {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
-h1, h2 {
+h1, h2, h3{
     color: #333;
     font-weight: bold;
     margin-left: 0;
@@ -60,11 +60,11 @@ ol {
 
 ol li {
     margin: 10px 0;
-    padding-left: 0; /* 左の余白を無くす */
+    padding-left: 0; 
     position: relative;
-    list-style-type: decimal; /* 通常の番号に戻す */
-    color: #333; /* 青色ではなく黒色に変更 */
-    font-weight: normal; /* 通常の太さに変更 */
+    list-style-type: decimal; 
+    color: #333; 
+    font-weight: normal; 
     font-size: 1em;
 }
 
