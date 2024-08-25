@@ -15,7 +15,7 @@ body {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
-h1, h2, h3{
+h1, h2, h3 {
     color: #333;
     font-weight: bold;
     margin-left: 0;
@@ -40,6 +40,9 @@ h3 {
     color: #555;
     font-size: 1.5em;
     margin-top: 30px;
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #ddd; /* 下線を追加 */
 }
 
 h4 {
@@ -60,11 +63,11 @@ ol {
 
 ol li {
     margin: 10px 0;
-    padding-left: 0; 
+    padding-left: 0;
     position: relative;
-    list-style-type: decimal; 
-    color: #333; 
-    font-weight: normal; 
+    list-style-type: decimal;
+    color: #333;
+    font-weight: normal;
     font-size: 1em;
 }
 
