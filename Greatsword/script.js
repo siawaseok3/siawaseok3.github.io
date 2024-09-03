@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
   const dataDiv = document.getElementById('data');
 
-  fetch('https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec')
+  fetch('https://script.google.com/macros/s/AKfycbxX8bZwwjvjv-nHC2u7n7Zxl5G4jDACD2moBJWX4NyglzWHVLEzRi09Wubgj89dpP5KEw/exec')
     .then(response => response.json())
     .then(data => {
       let content = '';
