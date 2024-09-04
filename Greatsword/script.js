@@ -6,9 +6,9 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(data => {
       let content = '';
       data.forEach(item => {
-        content += item + '<br>'; // 改行を追加
+        content += item + '<br>';
       });
-      dataDiv.innerHTML = content; // innerHTMLを使ってHTMLタグを解釈させる
+      dataDiv.innerHTML = content; 
     })
     .catch(error => {
       console.error('Error fetching data:', error);
