@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Generator</title>
+</head>
+<body>
+    <h1>URL Generator</h1>
+    <p>Enter the file name:</p>
+    <input type="text" id="inputText" placeholder="Enter file name">
+    <button onclick="generateURL()">Generate URL</button>
+    <p id="output"></p>
+
+    <script>
+        function generateURL() {
+            const baseURL = "https://gitlab.com/mpdpa/photos/-/raw/main/";
+            const userInput = document.getElementById("inputText").value;
+            const fullURL = baseURL + userInput;
+            document.getElementById("output").innerHTML = `<a href="${fullURL}" target="_blank">${fullURL}</a>`;
+        }
+    </script>
+</body>
+</html>
