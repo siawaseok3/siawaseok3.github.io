@@ -26,8 +26,8 @@
         // ページに表示されているバージョン
         const currentVersion = "v1.0.0";
 
-        // GitLabからバージョンを取得して比較
-        fetch('https://gitlab.com/mpdpa/v/-/raw/main/version.txt?ref_type=heads')
+        // CORS-anywhereを使用してGitLabからバージョンを取得して比較
+        fetch('https://cors-anywhere.herokuapp.com/https://gitlab.com/mpdpa/v/-/raw/main/version.txt')
             .then(response => response.text())
             .then(remoteVersion => {
                 remoteVersion = remoteVersion.trim(); // 空白を除去
