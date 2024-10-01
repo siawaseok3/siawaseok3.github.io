@@ -6,11 +6,20 @@
     <title>バージョンチェック</title>
 </head>
 <body>
-    <div>現在のバージョン: <span id="version">v1.0.0</span></div>
+    <div id="version-container">
+        <span id="version">v1.0.0</span>
+    </div>
 
     <script>
         // CSSをJavaScriptで定義
+        const versionContainer = document.getElementById("version-container");
         const versionElement = document.getElementById("version");
+
+        versionContainer.style.position = "fixed";
+        versionContainer.style.top = "10px";
+        versionContainer.style.right = "10px";
+        versionContainer.style.padding = "5px";
+        
         versionElement.style.padding = "5px";
         versionElement.style.color = "white";
 
