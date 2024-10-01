@@ -1,1 +1,43 @@
-<h2>あ</h2>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>バージョンチェック</title>
+</head>
+<body>
+    <div>現在のバージョン: <span id="version">v1.0.0</span></div>
+
+    <script>
+        // CSSをJavaScriptで定義
+        const versionElement = document.getElementById("version");
+        versionElement.style.padding = "5px";
+        versionElement.style.color = "white";
+
+        // ページに表示されているバージョン
+        const currentVersion = "v1.0.0";
+
+        // GitLabからバージョンを取得して比較
+        fetch('https://gitlab.com/mpdpa/v/-/raw/main/version.txt?ref_type=heads')
+            .then(response => response.text())
+            .then(remoteVersion => {
+                remoteVersion = remoteVersion.trim(); // 空白を除去
+
+                // バージョンを比較して背景色を変更
+                if (currentVersion === remoteVersion) {
+                    versionElement.style.backgroundColor = "green";
+                } else {
+                    versionElement.style.backgroundColor = "red";
+                }
+
+                // GitLabから取得したバージョンも表示
+                versionElement.textContent = `${currentVersion} (GitLab: ${remoteVersion})`;
+            })
+            .catch(error => {
+                console.error('Error fetching version:', error);
+                versionElement.style.backgroundColor = "gray";
+                versionElement.textContent = `${currentVersion} (エラー: バージョン取得失敗)`;
+            });
+    </script>
+</body>
+</html>
