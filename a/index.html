@@ -27,7 +27,7 @@
         const currentVersion = "v1.0.0";
 
         // CORS-anywhereを使用してGitLabからバージョンを取得して比較
-        fetch('https://cors-anywhere.herokuapp.com/https://gitlab.com/mpdpa/v/-/raw/main/version.txt')
+        fetch('https://raw.githubusercontent.com/siawaseok3/slim-2-by-siawaseok/refs/heads/main/version.txt')
             .then(response => response.text())
             .then(remoteVersion => {
                 remoteVersion = remoteVersion.trim(); // 空白を除去
