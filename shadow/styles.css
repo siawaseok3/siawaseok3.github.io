@@ -4,7 +4,7 @@ body {
 }
 
 canvas {
-    border: none; /* ボーダーをなくす */
+    border: 2px solid black; /* 黒いボーダーを追加 */
     background-color: transparent; /* 背景を透明にする */
     position: absolute; /* 絶対位置で配置 */
     right: 0; /* 右端に寄せる */
