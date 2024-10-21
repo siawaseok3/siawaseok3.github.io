@@ -100,7 +100,7 @@ const ground = {
     x: 0,
     y: 95, // キャンバスの高さに合わせて調整
     width: canvas.width,
-    height: 5,
+    height: 10,
     color: "black",
     draw() {
         ctx.fillStyle = this.color;
