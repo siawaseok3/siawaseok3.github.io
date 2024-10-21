@@ -1,120 +1,121 @@
 body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #2b1055, #7597de);
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh; /* 画面全体の高さを確保 */
-            position: relative; /* Required for positioning the overlay */
-            overflow: hidden; /* Prevents scrollbars due to the overlay */
-        }
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #2b1055, #7597de);
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
 
-        .overlay {
-            position: fixed; /* Covers the entire screen */
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Dark gray filter */
-            backdrop-filter: blur(5px); /* Slight blur effect */
-            z-index: 1; /* Ensure it's on top of everything */
-        }
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 1;
+}
 
-        header {
-            text-align: left;
-            padding: 15px; /* Reduced padding */
-            color: #ffffff;
-            position: relative; /* Required for positioning child elements */
-            z-index: 2; /* Ensure header is above the overlay */
-        }
+header {
+    text-align: left;
+    padding: 15px;
+    color: #ffffff;
+    position: relative;
+    z-index: 2;
+}
 
-        header h1 {
-            font-size: 2.5em; /* Font size */
-            font-weight: 700;
-            color: rgba(255, 100, 100, 0.8); /* Lightened fluorescent red */
-            text-shadow: 
-                0 0 5px rgba(255, 100, 100, 0.7), /* Slight blur */
-                0 0 10px rgba(255, 100, 100, 0.6), /* Medium blur */
-                0 0 15px rgba(255, 100, 100, 0.5), /* Bold shadow */
-                0 0 20px rgba(255, 100, 100, 0.4); /* Deeper shadow */
-            position: relative; /* Required for positioning the underline */
-            padding-bottom: 10px; /* Space between text and underline */
-        }
+header h1 {
+    font-size: 2.5em;
+    font-weight: 700;
+    color: rgba(255, 100, 100, 0.8);
+    text-shadow: 
+        0 0 5px rgba(255, 100, 100, 0.7),
+        0 0 10px rgba(255, 100, 100, 0.6),
+        0 0 15px rgba(255, 100, 100, 0.5),
+        0 0 20px rgba(255, 100, 100, 0.4);
+    position: relative;
+    padding-bottom: 10px;
+}
 
-        header h1::after {
-            content: ''; /* Empty content to create the underline */
-            position: absolute;
-            left: 0; /* Align to the left */
-            bottom: 0; /* Position at the bottom of the text */
-            width: 100%; /* Full width */
-            height: 4px; /* Thickness of the underline */
-            background-color: rgba(0, 0, 0, 1); /* Black underline color */
-        }
+header h1::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 4px;
+    background-color: rgba(0, 0, 0, 1);
+}
 
-        main {
-            padding: 30px; /* Reduced padding */
-            text-align: left;
-            position: relative; /* Required for positioning child elements */
-            z-index: 2; /* Ensure main content is above the overlay */
-            flex: 1; /* Main content takes up remaining space */
-        }
+main {
+    padding: 30px;
+    text-align: left;
+    position: relative;
+    z-index: 2;
+    flex: 1;
+}
 
-        h2 {
-            font-size: 1.8em; /* Reduced font size */
-            margin-bottom: 20px; /* Reduced margin */
-        }
+h2 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+}
 
-        .link-box {
-            margin: 15px 0; /* Reduced margin */
-            background-color: #1e1e1e;
-            padding: 10px; /* Reduced padding */
-            border-radius: 8px;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            color: #00e0ff;
-        }
+.link-box {
+    margin: 15px 0;
+    background-color: #1e1e1e;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    color: #00e0ff;
+}
 
-        .link-box a {
-            color: #00e0ff;
-            font-size: 1em; /* Reduced font size */
-            text-decoration: none;
-            flex-grow: 1;
-        }
+.link-box a {
+    color: #00e0ff;
+    font-size: 1em;
+    text-decoration: none;
+    flex-grow: 1;
+}
 
-        .btn-go {
-            padding: 8px 15px; /* Reduced padding */
-            background-color: #6a00ff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            font-size: 0.9em; /* Reduced font size */
-            font-weight: 700;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+.btn-go {
+    padding: 8px 15px;
+    background-color: #6a00ff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
-        .btn-go:hover {
-            background-color: #a34bff;
-        }
+.btn-go:hover {
+    background-color: #a34bff;
+}
 
-        footer {
-            margin-top: 30px; /* Reduced margin */
-            color: #bbb;
-            text-align: left;
-            padding: 15px; /* Reduced padding */
-            position: relative; /* Required for positioning child elements */
-            z-index: 2; /* Ensure footer is above the overlay */
-        }
+footer {
+    margin-top: 30px;
+    color: #bbb;
+    text-align: left;
+    padding: 15px;
+    position: relative;
+    z-index: 2;
+}
+
 canvas {
-    border: 2px solid black; /* 黒いボーダーを追加 */
-    background-color: transparent; /* 背景を透明にする */
-    position: absolute; /* 絶対位置で配置 */
-    right: 0; /* 右端に寄せる */
-    bottom: 0; /* 下端に寄せる */
-    margin: 0; /* マージンをなくす */
-    width: 150px; /* 横幅を150pxに設定 */
-    height: 70px; /* 縦幅を70pxに設定 */
+    border: 2px solid black;
+    background-color: transparent;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    width: 150px;
+    height: 70px;
 }
