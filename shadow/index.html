@@ -17,28 +17,37 @@
         }
         header {
             text-align: left;
-            padding: 20px;
+            padding: 15px; /* Reduced padding */
             color: #ffffff;
         }
         header h1 {
-            font-size: 3em;
+            font-size: 2.5em; /* Reduced font size */
             font-weight: 700;
-            text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.7); /* Stronger shadow */
-            text-decoration: underline; /* Add underline */
-            text-decoration-color: rgba(255, 255, 255, 0.5); /* Optional: customize underline color */
+            text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.7);
+            position: relative; /* Required for positioning the underline */
+            padding-bottom: 10px; /* Space between text and underline */
+        }
+        header h1::after {
+            content: ''; /* Empty content to create the underline */
+            position: absolute;
+            left: 0; /* Align to the left */
+            bottom: 0; /* Position at the bottom of the text */
+            width: 100%; /* Full width */
+            height: 4px; /* Thickness of the underline */
+            background-color: rgba(255, 255, 255, 0.5); /* Underline color */
         }
         main {
-            padding: 50px;
+            padding: 30px; /* Reduced padding */
             text-align: left;
         }
         h2 {
-            font-size: 2em;
-            margin-bottom: 30px;
+            font-size: 1.8em; /* Reduced font size */
+            margin-bottom: 20px; /* Reduced margin */
         }
         .link-box {
-            margin: 20px 0;
+            margin: 15px 0; /* Reduced margin */
             background-color: #1e1e1e;
-            padding: 15px;
+            padding: 10px; /* Reduced padding */
             border-radius: 8px;
             display: flex;
             justify-content: flex-start;
@@ -47,17 +56,17 @@
         }
         .link-box a {
             color: #00e0ff;
-            font-size: 1.1em;
+            font-size: 1em; /* Reduced font size */
             text-decoration: none;
             flex-grow: 1;
         }
         .btn-go {
-            padding: 10px 20px;
+            padding: 8px 15px; /* Reduced padding */
             background-color: #6a00ff;
             color: #fff;
             border: none;
             border-radius: 5px;
-            font-size: 1em;
+            font-size: 0.9em; /* Reduced font size */
             font-weight: 700;
             cursor: pointer;
             transition: background-color 0.3s ease;
@@ -66,10 +75,10 @@
             background-color: #a34bff;
         }
         footer {
-            margin-top: 50px;
+            margin-top: 30px; /* Reduced margin */
             color: #bbb;
             text-align: left;
-            padding: 20px;
+            padding: 15px; /* Reduced padding */
         }
     </style>
 </head>
