@@ -1,147 +1,15 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>クールなページ</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #2b1055, #7597de);
-            color: #ffffff;
-            position: relative; /* Required for positioning the overlay */
-            overflow: hidden; /* Prevents scrollbars due to the overlay */
-        }
-
-        .overlay {
-            position: fixed; /* Covers the entire screen */
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Dark gray filter */
-            backdrop-filter: blur(5px); /* Slight blur effect */
-            z-index: 1; /* Ensure it's on top of everything */
-        }
-
-        header {
-            text-align: left;
-            padding: 15px; /* Reduced padding */
-            color: #ffffff;
-            position: relative; /* Required for positioning child elements */
-            z-index: 2; /* Ensure header is above the overlay */
-        }
-
-        header h1 {
-            font-size: 2.5em; /* Font size */
-            font-weight: 700;
-            color: rgba(255, 100, 100, 0.8); /* Lightened fluorescent red */
-            text-shadow: 
-                0 0 5px rgba(255, 100, 100, 0.7), /* Slight blur */
-                0 0 10px rgba(255, 100, 100, 0.6), /* Medium blur */
-                0 0 15px rgba(255, 100, 100, 0.5), /* Bold shadow */
-                0 0 20px rgba(255, 100, 100, 0.4); /* Deeper shadow */
-            position: relative; /* Required for positioning the underline */
-            padding-bottom: 10px; /* Space between text and underline */
-        }
-
-        header h1::after {
-            content: ''; /* Empty content to create the underline */
-            position: absolute;
-            left: 0; /* Align to the left */
-            bottom: 0; /* Position at the bottom of the text */
-            width: 100%; /* Full width */
-            height: 4px; /* Thickness of the underline */
-            background-color: rgba(0, 0, 0, 1); /* Black underline color */
-        }
-
-        main {
-            padding: 30px; /* Reduced padding */
-            text-align: left;
-            position: relative; /* Required for positioning child elements */
-            z-index: 2; /* Ensure main content is above the overlay */
-        }
-
-        h2 {
-            font-size: 1.8em; /* Reduced font size */
-            margin-bottom: 20px; /* Reduced margin */
-        }
-
-        .link-box {
-            margin: 15px 0; /* Reduced margin */
-            background-color: #1e1e1e;
-            padding: 10px; /* Reduced padding */
-            border-radius: 8px;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            color: #00e0ff;
-        }
-
-        .link-box a {
-            color: #00e0ff;
-            font-size: 1em; /* Reduced font size */
-            text-decoration: none;
-            flex-grow: 1;
-        }
-
-        .btn-go {
-            padding: 8px 15px; /* Reduced padding */
-            background-color: #6a00ff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            font-size: 0.9em; /* Reduced font size */
-            font-weight: 700;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-go:hover {
-            background-color: #a34bff;
-        }
-
-        footer {
-            margin-top: 30px; /* Reduced margin */
-            color: #bbb;
-            text-align: left;
-            padding: 15px; /* Reduced padding */
-            position: relative; /* Required for positioning child elements */
-            z-index: 2; /* Ensure footer is above the overlay */
-        }
-    </style>
+    <title>Dino Game</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="overlay"></div>
-    <header>
-        <h1>ShadowV3</h1>
-    </header>
-
-    <main>
-        <h2>リンク</h2>
-        <div class="link-box">
-            <a href="https://siawaseok3.github.io/shadow/url-1/" target="_blank">https://siawaseok3.github.io/shadow/url-1/</a>
-            <button class="btn-go" onclick="window.open('https://siawaseok3.github.io/shadow/url-1/', '_blank')">Go</button>
-        </div>
-        <div class="link-box">
-            <a href="https://siawaseok3.github.io/shadow/url-2/" target="_blank">https://siawaseok3.github.io/shadow/url-2/</a>
-            <button class="btn-go" onclick="window.open('https://siawaseok3.github.io/shadow/url-2/', '_blank')">Go</button>
-        </div>
-
-        <h2>幸せインスタンス</h2>
-        <div class="link-box">
-            <a href="https://sites.google.com/view/siawaseinstance-ver6/" target="_blank">https://sites.google.com/view/siawaseinstance-ver6/</a>
-            <button class="btn-go" onclick="window.open('https://sites.google.com/view/siawaseinstance-ver6/', '_blank')">Go</button>
-        </div>
-    </main>
-
-    <footer>
-        <p>© 2024 ShadowV3 - All Rights Reserved</p>
-    </footer>
+    <canvas id="gameCanvas"></canvas>
+    
+    <script src="dino-game.js"></script>
 </body>
 </html>
+

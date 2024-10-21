@@ -1,0 +1,13 @@
+body {
+    margin: 0; /* デフォルトのマージンをなくす */
+    overflow: hidden; /* スクロールバーを表示しない */
+}
+
+canvas {
+    border: none; /* ボーダーをなくす */
+    background-color: transparent; /* 背景を透明にする */
+    position: absolute; /* 絶対位置で配置 */
+    right: 0; /* 右端に寄せる */
+    bottom: 0; /* 下端に寄せる */
+    margin: 0; /* マージンをなくす */
+}
