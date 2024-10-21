@@ -23,7 +23,7 @@ const switchFrameInterval = 10; // この数値を変更して画像切り替え
 // 恐竜の設定（キャンバス内に収まるようにサイズ調整）
 const dino = {
     x: 10,
-    y: 60, // キャンバスの高さに合わせて調整
+    y: 75, // 地面からの高さを調整（床の上に配置）
     width: 20, // 横幅
     height: 20, // 縦幅
     gravity: 0.6,
@@ -42,8 +42,8 @@ const dino = {
             this.velocityY += this.gravity;
 
             // 着地時にジャンプを終了
-            if (this.y >= 60) {
-                this.y = 60;
+            if (this.y >= 75) { // 地面の位置に合わせて調整
+                this.y = 75;
                 this.isJumping = false;
             }
         }
@@ -63,7 +63,7 @@ const dino = {
 // 障害物の設定（キャンバス内に収まるようにサイズ調整）
 const obstacle = {
     x: canvas.width,
-    y: 80, // キャンバスの高さに合わせて調整
+    y: 80, // 地面からの高さを調整（床の上に配置）
     width: 10, // 横幅
     height: 10, // 縦幅
     speed: 2,
