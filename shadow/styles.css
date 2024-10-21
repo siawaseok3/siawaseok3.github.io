@@ -10,4 +10,6 @@ canvas {
     right: 0; /* 右端に寄せる */
     bottom: 0; /* 下端に寄せる */
     margin: 0; /* マージンをなくす */
+    width: 150px; /* 横幅を150pxに設定 */
+    height: 70px; /* 縦幅を70pxに設定 */
 }
