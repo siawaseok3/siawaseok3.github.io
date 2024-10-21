@@ -1,9 +1,9 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// キャンバスのサイズを縦70px、横150pxに設定
-canvas.width = 150;
-canvas.height = 70;
+// キャンバスのサイズを縦105px、横225pxに設定
+canvas.width = 225;
+canvas.height = 105;
 
 // 恐竜の画像の読み込み
 const dinoImages = [
@@ -23,9 +23,9 @@ const switchFrameInterval = 10; // この数値を変更して画像切り替え
 // 恐竜の設定（キャンバス内に収まるようにサイズ調整）
 const dino = {
     x: 10,
-    y: 40,
+    y: 60, // キャンバスの高さに合わせて調整
     width: 20, // 横幅
-    height: 20, // 縦幅（小さく調整）
+    height: 20, // 縦幅
     gravity: 0.6,
     jumpStrength: -5,
     velocityY: 0,
@@ -42,8 +42,8 @@ const dino = {
             this.velocityY += this.gravity;
 
             // 着地時にジャンプを終了
-            if (this.y >= 40) {
-                this.y = 40;
+            if (this.y >= 60) {
+                this.y = 60;
                 this.isJumping = false;
             }
         }
@@ -63,7 +63,7 @@ const dino = {
 // 障害物の設定（キャンバス内に収まるようにサイズ調整）
 const obstacle = {
     x: canvas.width,
-    y: 50,
+    y: 80, // キャンバスの高さに合わせて調整
     width: 10, // 横幅
     height: 10, // 縦幅
     speed: 2,
@@ -103,7 +103,7 @@ const obstacle = {
 // 床の設定（キャンバスの下端に設定）
 const ground = {
     x: 0,
-    y: 60, // キャンバスの高さに合わせて調整
+    y: 95, // キャンバスの高さに合わせて調整
     width: canvas.width,
     height: 10,
     color: "black",
