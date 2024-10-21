@@ -14,6 +14,9 @@
             padding: 0;
             background: linear-gradient(135deg, #2b1055, #7597de);
             color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* 画面全体の高さを確保 */
             position: relative; /* Required for positioning the overlay */
             overflow: hidden; /* Prevents scrollbars due to the overlay */
         }
@@ -65,6 +68,7 @@
             text-align: left;
             position: relative; /* Required for positioning child elements */
             z-index: 2; /* Ensure main content is above the overlay */
+            flex: 1; /* Main content takes up remaining space */
         }
 
         h2 {
@@ -114,7 +118,8 @@
             position: relative; /* Required for positioning child elements */
             z-index: 2; /* Ensure footer is above the overlay */
         }
-    </style>
+</style>
+
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
