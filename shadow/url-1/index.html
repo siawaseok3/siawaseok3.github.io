@@ -132,7 +132,7 @@
         .cactus {
             position: absolute;
             bottom: 20px; /* Position above the ground */
-            right: 0; /* Start position */
+            right: -50px; /* Start just off-screen */
             width: 30px; /* Cactus width */
             height: 40px; /* Cactus height */
             background-color: #8B4513; /* Brown color for the cactus */
@@ -144,13 +144,15 @@
         /* Cactus animation */
         @keyframes moveCactus {
             0% {
-                right: 0; /* Start from the right */
+                right: -50px; /* Start off the screen */
+            }
+            50% {
+                right: 0; /* Move into view */
             }
             100% {
-                right: 100%; /* Move to the left */
+                right: -50px; /* Move off the screen */
             }
         }
-
     </style>
 </head>
 <body>
@@ -196,16 +198,19 @@
             }, 300); // Jump duration
         }
 
-        // Trigger jump when cactus is in position (adjust timing as needed)
-        setInterval(() => {
+        // Check if the cactus is close enough to trigger the jump
+        function checkJump() {
             const cactus = document.querySelector('.cactus');
-            const cactusPosition = cactus.getBoundingClientRect().right;
+            const cactusPosition = cactus.getBoundingClientRect();
 
-            // Check if the cactus is near the dinosaur (assuming window width of 1000px)
-            if (cactusPosition < window.innerWidth - 150) {
+            // Check if the cactus is near the dinosaur (assuming dinosaur is 100px from the right)
+            if (cactusPosition.right < window.innerWidth - 150 && cactusPosition.right > window.innerWidth - 250) {
                 jump();
             }
-        }, 100); // Check every 100 milliseconds
+        }
+
+        // Set an interval to check the jump condition
+        setInterval(checkJump, 100); // Check every 100 milliseconds
     </script>
 </body>
 </html>
