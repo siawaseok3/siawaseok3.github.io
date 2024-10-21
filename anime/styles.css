@@ -1,0 +1,15 @@
+/* キャンバスの中央揃え */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f4f4f4;
+}
+
+/* キャンバスの枠とサイズ調整 */
+canvas {
+    border: 2px solid #000;
+    background-color: #fff;
+}
