@@ -1,7 +1,7 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// キャンバスのサイズを縦105px、横225pxに設定
+// キャンバスのサイズ
 canvas.width = 225;
 canvas.height = 105;
 
@@ -20,12 +20,11 @@ let currentImageIndex = 0;
 let frameCount = 0;
 const switchFrameInterval = 10; // この数値を変更して画像切り替え速度を調整
 
-// 恐竜の設定（キャンバス内に収まるようにサイズ調整）
 const dino = {
     x: 10,
-    y: 60, // キャンバスの高さに合わせて調整
-    width: 20, // 横幅
-    height: 20, // 縦幅
+    y: 60, 
+    width: 20, 
+    height: 20, 
     gravity: 0.6,
     jumpStrength: -5,
     velocityY: 0,
@@ -41,18 +40,16 @@ const dino = {
             this.y += this.velocityY;
             this.velocityY += this.gravity;
 
-            // 着地時にジャンプを終了
             if (this.y >= 60) {
                 this.y = 60;
                 this.isJumping = false;
             }
         }
 
-        // 画像の切り替え
         frameCount++;
         if (frameCount >= switchFrameInterval) {
             frameCount = 0;
-            currentImageIndex = (currentImageIndex + 1) % dinoImages.length; // 画像を交互に切り替え
+            currentImageIndex = (currentImageIndex + 1) % dinoImages.length;
         }
     },
     draw() {
@@ -60,12 +57,11 @@ const dino = {
     }
 };
 
-// 障害物の設定（キャンバス内に収まるようにサイズ調整）
 const obstacle = {
     x: canvas.width,
-    y: 80, // キャンバスの高さに合わせて調整
-    width: 10, // 横幅
-    height: 10, // 縦幅
+    y: 80, 
+    width: 10, 
+    height: 10, 
     speed: 2,
     isVisible: false,
     respawnDelay: 0,
@@ -73,14 +69,13 @@ const obstacle = {
         if (this.isVisible) {
             this.x -= this.speed;
 
-            // 障害物が画面外に出たら消す
+            
             if (this.x + this.width < 0) {
                 this.isVisible = false;
                 this.x = canvas.width;
                 this.respawnDelay = Math.random() * 1000 + 1000; // 1〜2秒のランダム遅延
             }
 
-            // 恐竜との距離が狭まったらジャンプ
             if (this.x < dino.x + dino.width && this.x + this.width > dino.x) {
                 dino.jump();
             }
@@ -105,7 +100,7 @@ const ground = {
     x: 0,
     y: 95, // キャンバスの高さに合わせて調整
     width: canvas.width,
-    height: 10,
+    height: 5,
     color: "black",
     draw() {
         ctx.fillStyle = this.color;
