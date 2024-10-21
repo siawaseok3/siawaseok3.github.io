@@ -4,72 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>スタイリッシュなページ</title>
-    <!-- Google Fonts Poppins フォント -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>クールなページ</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
             margin: 0;
             padding: 0;
+            background: linear-gradient(135deg, #2b1055, #7597de);
+            color: #ffffff;
         }
         header {
-            background-color: #121212;
-            padding: 20px;
             text-align: left;
-            border-bottom: 2px solid #333;
+            padding: 20px;
+            color: #ffffff;
         }
         header h1 {
-            margin: 0;
+            font-size: 3em;
             font-weight: 700;
-            font-size: 2.5em;
-            color: #ffffff;  /* タイトルを白色に設定 */
-            letter-spacing: 1px;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
         }
         main {
-            padding: 30px;
+            padding: 50px;
+            text-align: center;
         }
         h2 {
-            color: #f0f0f0;
-            border-bottom: 2px solid #333;
-            padding-bottom: 10px;
-            font-weight: 400;
-            margin-bottom: 20px;
+            font-size: 2em;
+            margin-bottom: 30px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #6a00ff;
+            color: #fff;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 1.2em;
+            font-weight: 700;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #a34bff;
         }
         ul {
-            list-style-type: none;
+            list-style: none;
             padding: 0;
         }
         ul li {
-            background-color: #1e1e1e;
             margin: 10px 0;
-            padding: 15px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
         }
-        ul li:hover {
-            background-color: #333;
-        }
-        a {
+        ul li a {
             text-decoration: none;
             color: #00e0ff;
-            font-weight: 500;
             font-size: 1.1em;
         }
-        a:hover {
-            color: #1d9bf0;
-        }
-        .highlight {
-            font-weight: bold;
-            color: #ffcc00;
+        footer {
+            margin-top: 50px;
+            color: #bbb;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Show Browser</h1>
+        <h1>ShadowV3</h1>
     </header>
 
     <main>
@@ -78,7 +76,11 @@
             <li><a href="https://siawaseok3.github.io/shadow/url-1/">リンク1</a></li>
             <li><a href="https://siawaseok3.github.io/shadow/url-2/">リンク2</a></li>
         </ul>
-        <p>幸せインスタンス: <a class="highlight" href="https://sites.google.com/view/siawaseinstance-ver6/" target="_blank">https://sites.google.com/view/siawaseinstance-ver6/</a></p>
+        <p><a class="btn" href="https://sites.google.com/view/siawaseinstance-ver6/" target="_blank">Get Started</a></p>
     </main>
+
+    <footer>
+        <p>© 2024 ShadowV3 - All Rights Reserved</p>
+    </footer>
 </body>
 </html>
