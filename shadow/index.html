@@ -4,21 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>タイトル</title>
+    <title>スタイリッシュなページ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+        }
+        main {
+            padding: 20px;
+        }
+        h2 {
+            color: #555;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            background-color: #eee;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        ul li:hover {
+            background-color: #ddd;
+        }
+        a {
+            text-decoration: none;
+            color: #333;
+        }
+        a:hover {
+            color: #007BFF;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #007BFF;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>show browser</h1>
+        <h1>Show Browser</h1>
     </header>
+
     <main>
         <h2>リンク</h2>
-        <p>
-            <li>
-                リンク1
-                リンク2
-            </li>
-        </p>
-        幸せインスタンス(url)
+        <ul>
+            <li><a href="#">リンク1</a></li>
+            <li><a href="#">リンク2</a></li>
+        </ul>
+        <p>幸せインスタンス: <span class="highlight">(url)</span></p>
     </main>
 </body>
 </html>
