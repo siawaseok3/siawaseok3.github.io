@@ -2,8 +2,8 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 // キャンバスのサイズを縦70px、横150pxに設定
-canvas.width = 150;
-canvas.height = 70;
+canvas.width = 225;
+canvas.height = 105;
 
 // 恐竜の画像の読み込み
 const dinoImages = [
