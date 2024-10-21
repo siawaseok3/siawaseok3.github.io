@@ -10,11 +10,11 @@ const dinoImages = [
     new Image(),
     new Image()
 ];
-dinoImages[0].src = '/photo1/photo1.png'; // 恐竜の最初の画像
-dinoImages[1].src = '/photo2/photo2.png'; // 恐竜の2つ目の画像
+dinoImages[0].src = '/anime/photo1/photo1.png'; // 恐竜の最初の画像
+dinoImages[1].src = '/anime/photo2/photo2.png'; // 恐竜の2つ目の画像
 
 const obstacleImage = new Image();
-obstacleImage.src = '/photo3/photo3.png'; // 障害物の画像
+obstacleImage.src = '/anime/photo3/photo3.png'; // 障害物の画像
 
 let currentImageIndex = 0;
 let frameCount = 0;
