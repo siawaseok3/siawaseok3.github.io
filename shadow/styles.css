@@ -109,6 +109,10 @@ footer {
     z-index: 2;
 }
 
+.footertxt {
+    font-size: 6px;
+}
+
 canvas {
     border: 2px solid black;
     background-color: transparent;
