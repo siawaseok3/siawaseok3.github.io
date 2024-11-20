@@ -28,7 +28,7 @@
       background-color: rgba(0, 0, 0, 0.6);
       z-index: 9999;
     }
-    /* ポップアップのスタイル */
+    
     #loading-popup {
       position: absolute;
       top: 50%;
@@ -51,7 +51,7 @@
     <button type="submit">取得</button>
   </form>
 
-  <!-- オーバーレイとポップアップ -->
+
   <div id="overlay">
     <div id="loading-popup">取得中...</div>
   </div>
@@ -83,11 +83,11 @@
       const videoId = videoIdInput.value;
       const apiUrl = `https://script.google.com/macros/s/AKfycbxYjOWULjin5kpp-NcjjjGujVX3wy1TEJVUR2AZtR6-5c_q7GBr1Nctl2_Kat4lSboD/exec?videoId=api/v1/videos/${videoId}`;
 
-      // オーバーレイ表示
+   
       overlay.style.display = "block";
 
       try {
-        // 2秒間オーバーレイを表示
+      
         await new Promise(resolve => setTimeout(resolve, 2000));
 
         const response = await fetch(apiUrl);
@@ -97,12 +97,12 @@
         const data = await response.json();
         displayResults(data);
 
-        // 入力欄をリセット
+  
         videoIdInput.value = "";
       } catch (error) {
         alert(`エラー: ${error.message}`);
       } finally {
-        // オーバーレイ非表示
+      
         overlay.style.display = "none";
       }
     });
