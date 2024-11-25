@@ -17,7 +17,6 @@
       margin-top: 10px;
       display: none;
     }
-    /* 全画面オーバーレイ */
     #overlay {
       display: none;
       position: fixed;
@@ -28,7 +27,6 @@
       background-color: rgba(0, 0, 0, 0.6);
       z-index: 9999;
     }
-    
     #loading-popup {
       position: absolute;
       top: 50%;
@@ -46,11 +44,10 @@
 <body>
   <h1>動画情報取得ツール</h1>
   <form id="video-form">
-    <label for="video-id">動画ID (例: dQw4w9WgXcQ):</label>
+    <label for="video-id">動画IDまたはURL:</label>
     <input type="text" id="video-id" required>
     <button type="submit">取得</button>
   </form>
-
 
   <div id="overlay">
     <div id="loading-popup">取得中...</div>
@@ -67,12 +64,22 @@
     <p><strong>再生回数:</strong> <span id="views"></span></p>
     <p><strong>高評価数:</strong> <span id="likes"></span></p>
     <p><strong>公開日時:</strong> <span id="published"></span></p>
-    <p><strong>概要:</strong> <span id="description"></span></p>
+    <p><strong>概要:</strong></p>
+    <pre id="description"></pre>
     <h3>コメント</h3>
     <ul id="comments"></ul>
   </div>
 
   <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const videoId = urlParams.get("videoId");
+
+      if (videoId) {
+        fetchVideoData(videoId);
+      }
+    });
+
     const form = document.getElementById("video-form");
     const overlay = document.getElementById("overlay");
     const results = document.getElementById("results");
@@ -80,32 +87,56 @@
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const videoIdInput = document.getElementById("video-id");
-      const videoId = videoIdInput.value;
-      const apiUrl = `https://script.google.com/macros/s/AKfycbxYjOWULjin5kpp-NcjjjGujVX3wy1TEJVUR2AZtR6-5c_q7GBr1Nctl2_Kat4lSboD/exec?videoId=api/v1/videos/${videoId}`;
+      const input = videoIdInput.value.trim();
+      
+      const videoId = extractVideoId(input);
+      if (videoId) {
+        updateUrlWithVideoId(videoId);
+        await fetchVideoData(videoId);
+      } else {
+        alert("正しい動画IDまたはURLを入力してください。");
+      }
+    });
 
-   
+    async function fetchVideoData(videoId) {
+      const apiUrl = `https://script.google.com/macros/s/AKfycbxYjOWULjin5kpp-NcjjjGujVX3wy1TEJVUR2AZtR6-5c_q7GBr1Nctl2_Kat4lSboD/exec?videoId=api/v1/videos/${videoId}`;
       overlay.style.display = "block";
 
       try {
-      
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
         const response = await fetch(apiUrl);
         if (!response.ok) {
           throw new Error("APIリクエストに失敗しました");
         }
         const data = await response.json();
         displayResults(data);
-
-  
-        videoIdInput.value = "";
       } catch (error) {
         alert(`エラー: ${error.message}`);
       } finally {
-      
         overlay.style.display = "none";
       }
-    });
+    }
+
+    function extractVideoId(input) {
+      const videoIdPattern = /^[a-zA-Z0-9_-]{11}$/;
+      const urlPattern = /(?:https?:\/\/)?(?:www\.)?youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})|youtu\.be\/([a-zA-Z0-9_-]{11})/;
+
+      if (videoIdPattern.test(input)) {
+        return input;
+      }
+
+      const urlMatch = input.match(urlPattern);
+      if (urlMatch) {
+        return urlMatch[1] || urlMatch[2];
+      }
+
+      return null;
+    }
+
+    function updateUrlWithVideoId(videoId) {
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.set("videoId", videoId);
+      window.history.pushState(null, "", currentUrl);
+    }
 
     function displayResults(data) {
       document.getElementById("title").textContent = data.title;
@@ -133,6 +164,8 @@
       document.getElementById("views").textContent = data.viewCount || "不明";
       document.getElementById("likes").textContent = data.likeCount || "不明";
       document.getElementById("published").textContent = data.publishedText || "不明";
+      
+      // 概要欄の改行を適用
       document.getElementById("description").textContent = data.description || "なし";
 
       const commentsContainer = document.getElementById("comments");
