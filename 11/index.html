@@ -9,7 +9,6 @@
     <h2>URLパラメータ変換</h2>
     <p>変換後のJSON:</p>
     <pre id="output"></pre>
-    <button onclick="copyToClipboard()">コピー</button>
 
     <script>
         function getQueryParam(name) {
@@ -23,15 +22,18 @@
 
         function processUrl() {
             let input = getQueryParam("input");
+            if (!input) return;
+            
             let cleaned = cleanUrl(input);
             let json = JSON.stringify({ "params": `?${cleaned}` }, null, 2);
             document.getElementById("output").textContent = json;
+
+            copyToClipboard(json);
         }
 
-        function copyToClipboard() {
-            let text = document.getElementById("output").textContent;
+        function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                alert("コピーしました！");
+                alert("変換されたJSONをコピーしました！");
             }).catch(err => {
                 alert("コピーに失敗しました");
                 console.error(err);
