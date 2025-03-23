@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文字をパラメータに設定</title>
+</head>
+<body>
+    <input type="text" id="inputText" placeholder="文字を入力">
+    <button onclick="setParams()">設定</button>
+    <button onclick="copyParams()">コピー</button>
+    <pre id="output"></pre>
+
+    <script>
+        function setParams() {
+            const input = document.getElementById("inputText").value;
+            const params = { "params": `?${input}` };
+            const jsonString = JSON.stringify(params, null, 2);
+            document.getElementById("output").textContent = jsonString;
+        }
+
+        function copyParams() {
+            const outputText = document.getElementById("output").textContent;
+            if (!outputText) return;
+
+            navigator.clipboard.writeText(outputText).then(() => {
+                alert("コピーしました！");
+            }).catch(err => {
+                alert("コピーに失敗しました");
+                console.error(err);
+            });
+        }
+    </script>
+</body>
+</html>
