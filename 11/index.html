@@ -8,7 +8,9 @@
 <body>
     <h2>URLパラメータ変換</h2>
     <p>変換後のJSON:</p>
-    <pre id="output"></pre>
+    <pre id="output" style="padding: 10px; border: 1px solid #ccc; display: inline-block;"></pre>
+    <br>
+    <button id="copyBtn" style="margin-top: 10px; padding: 5px 10px; cursor: pointer;">コピー</button>
 
     <script>
         function getQueryParam(name) {
@@ -28,13 +30,15 @@
             let json = JSON.stringify({ "params": `?${cleaned}` }, null, 2);
             document.getElementById("output").textContent = json;
 
-            // 0.5秒（500ms）後にコピー
-            setTimeout(() => copyToClipboard(json), 500);
+            // ボタンでコピー
+            document.getElementById("copyBtn").onclick = function () {
+                copyToClipboard(json);
+            };
         }
 
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                alert("変換されたJSONをコピーしました！");
+                alert("コピーしました！");
             }).catch(err => {
                 alert("コピーに失敗しました");
                 console.error(err);
