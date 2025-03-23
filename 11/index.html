@@ -28,7 +28,8 @@
             let json = JSON.stringify({ "params": `?${cleaned}` }, null, 2);
             document.getElementById("output").textContent = json;
 
-            copyToClipboard(json);
+            // 0.5秒（500ms）後にコピー
+            setTimeout(() => copyToClipboard(json), 500);
         }
 
         function copyToClipboard(text) {
