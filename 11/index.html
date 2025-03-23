@@ -3,29 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>文字をパラメータに設定</title>
+    <title>URLパラメータ変換</title>
 </head>
 <body>
-    <input type="text" id="inputText" placeholder="文字を入力">
-    <button onclick="setAndCopyParams()">設定 & コピー</button>
+    <h2>URLパラメータ変換</h2>
+    <p>変換後のJSON:</p>
     <pre id="output"></pre>
+    <button onclick="copyToClipboard()">コピー</button>
 
     <script>
-        function setAndCopyParams() {
-            let input = document.getElementById("inputText").value;
-            input = input.replace(/;end=\d+&amp/g, ""); // `;end=時間&amp` を削除
-            const params = { "params": `?${input}` };
-            const jsonString = JSON.stringify(params, null, 2);
-            document.getElementById("output").textContent = jsonString;
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name) || "";
+        }
 
-            // 自動でクリップボードにコピー
-            navigator.clipboard.writeText(jsonString).then(() => {
+        function cleanUrl(url) {
+            return url.replace(/;end=\d+&amp/g, "");
+        }
+
+        function processUrl() {
+            let input = getQueryParam("input");
+            let cleaned = cleanUrl(input);
+            let json = JSON.stringify({ "params": `?${cleaned}` }, null, 2);
+            document.getElementById("output").textContent = json;
+        }
+
+        function copyToClipboard() {
+            let text = document.getElementById("output").textContent;
+            navigator.clipboard.writeText(text).then(() => {
                 alert("コピーしました！");
             }).catch(err => {
                 alert("コピーに失敗しました");
                 console.error(err);
             });
         }
+
+        processUrl();
     </script>
 </body>
 </html>
