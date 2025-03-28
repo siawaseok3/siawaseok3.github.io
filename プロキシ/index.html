@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ポート8080でポート80を表示（シンプル版）</title>
+    <title>ポート8080でポート80のサイトを見る（画像版）</title>
 </head>
 <body>
-    <h1>ポート8080からポート80のサイトを表示</h1>
+    <h1>ポート8080でポート80のサイトを画像で表示</h1>
 
     <label for="target">ターゲットURL:</label>
     <input type="text" id="target" placeholder="http://example.com" required>
-    <button onclick="loadPage()">表示</button>
+    <button onclick="loadImage()">表示</button>
 
-    <h2>ターゲットサイト（ポート80）を表示:</h2>
-    <iframe id="preview" src="http://219.117.121.18" width="100%" height="600px" style="border: none;"></iframe>
+    <h2>ターゲットサイト（ポート80）の画像:</h2>
+    <img id="preview" src="http://219.117.121.18/screenshot.jpg" width="100%" alt="ターゲットサイトのイメージ" />
 
     <script>
-        function loadPage() {
+        function loadImage() {
             const input = document.getElementById("target").value;
             if (input) {
-                document.getElementById("preview").src = input;
-                history.pushState(null, "", "?target=" + encodeURIComponent(input)); // アドレスバーを更新
+                document.getElementById("preview").src = `/screenshot?target=${encodeURIComponent(input)}&t=${Date.now()}`;
+                history.pushState(null, "", "?target=" + encodeURIComponent(input)); // アドレスバー更新
             }
         }
 
@@ -30,7 +30,7 @@
             const targetUrl = params.get("target");
             if (targetUrl) {
                 document.getElementById("target").value = targetUrl;
-                document.getElementById("preview").src = targetUrl;
+                document.getElementById("preview").src = `/screenshot?target=${encodeURIComponent(targetUrl)}&t=${Date.now()}`;
             }
         };
     </script>
