@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ポート8080でポート80を表示（SPA）</title>
+</head>
+<body>
+    <h1>ポート8080からポート80のサイトを表示（SPA）</h1>
+
+    <label for="target">ターゲットURL:</label>
+    <input type="text" id="target" placeholder="http://example.com" required>
+    <button onclick="loadPage()">表示</button>
+
+    <h2>ターゲットサイト（ポート80）を表示:</h2>
+    <iframe id="preview" src="http://219.117.121.18" width="100%" height="600px" style="border: none;"></iframe>
+
+    <div id="proxy-content"></div>
+
+    <script>
+        function loadPage() {
+            const input = document.getElementById("target").value;
+            if (input) {
+                document.getElementById("preview").src = input;
+                history.pushState(null, "", "?target=" + encodeURIComponent(input)); // アドレスバー更新
+                fetchAndRewrite(input); // HTML取得してリンクを書き換える
+            }
+        }
+
+        // HTMLを取得してリンクを書き換える
+        async function fetchAndRewrite(url) {
+            try {
+                const response = await fetch("/proxy?target=" + encodeURIComponent(url));
+                if (!response.ok) throw new Error("Failed to fetch");
+                const html = await response.text();
+                
+                // HTML内のリンクを書き換え
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, "text/html");
+                doc.querySelectorAll("a").forEach(link => {
+                    const href = link.getAttribute("href");
+                    if (href && !href.startsWith("http")) {
+                        link.href = `?target=${encodeURIComponent(new URL(href, url).href)}`;
+                    }
+                });
+
+                document.getElementById("proxy-content").innerHTML = doc.body.innerHTML;
+            } catch (error) {
+                console.error(error);
+                document.getElementById("proxy-content").innerHTML = "エラーが発生しました";
+            }
+        }
+
+        // URLパラメータから復元
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            const targetUrl = params.get("target");
+            if (targetUrl) {
+                document.getElementById("target").value = targetUrl;
+                document.getElementById("preview").src = targetUrl;
+                fetchAndRewrite(targetUrl);
+            }
+        };
+    </script>
+</body>
+</html>
