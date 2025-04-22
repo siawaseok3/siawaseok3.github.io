@@ -16,14 +16,20 @@
       width: 100%;
       margin-top: 20px;
     }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
 
   <h1>動画再生</h1>
 
-  <label for="videoIdInput">動画ID:</label>
-  <input type="text" id="videoIdInput" placeholder="例: HRlW6yZo6Kc">
+  <label for="videoUrlInput">YouTubeのURLまたは動画ID:</label>
+  <input type="text" id="videoUrlInput" placeholder="例: https://youtu.be/HRlW6yZo6Kc または HRlW6yZo6Kc">
   <button onclick="loadVideo()">再生</button>
 
   <iframe id="videoFrame" frameborder="0" allowfullscreen
@@ -34,10 +40,30 @@
   <script>
     const CONFIG_URL = "https://raw.githubusercontent.com/siawaseok3/wakame/master/video_config.json";
 
+    function extractVideoId(input) {
+      const urlPatterns = [
+        /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&\s]+)/,
+        /(?:https?:\/\/)?(?:m\.)?youtube\.com\/watch\?v=([^&\s]+)/,
+        /(?:https?:\/\/)?youtu\.be\/([^?\s]+)/,
+      ];
+
+      for (const pattern of urlPatterns) {
+        const match = input.match(pattern);
+        if (match) return match[1];
+      }
+
+      // もしIDっぽかったらそのまま返す（11文字）
+      if (/^[\w-]{11}$/.test(input)) return input;
+
+      return null;
+    }
+
     function loadVideo() {
-      const videoId = document.getElementById("videoIdInput").value.trim();
+      const input = document.getElementById("videoUrlInput").value.trim();
+      const videoId = extractVideoId(input);
+
       if (!videoId) {
-        alert("動画IDを入力してください。");
+        alert("正しいYouTubeのURLまたは動画IDを入力してください。");
         return;
       }
 
