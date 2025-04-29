@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouTube急上昇 解析ビューア</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 1em;
+    }
+    h1, h2 {
+      color: #444;
+    }
+    section {
+      margin-bottom: 2em;
+    }
+    .video {
+      display: flex;
+      gap: 1em;
+      margin-bottom: 1em;
+      background: #fff;
+      padding: 1em;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    img {
+      width: 120px;
+      height: auto;
+      border-radius: 4px;
+    }
+    .info {
+      flex: 1;
+    }
+    .title {
+      font-weight: bold;
+      margin-bottom: 0.5em;
+    }
+    .meta {
+      color: #666;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <h1>YouTube 急上昇動画</h1>
+  <p id="updated"></p>
+
+  <section id="trending"><h2>全体</h2></section>
+  <section id="music"><h2>音楽</h2></section>
+  <section id="gaming"><h2>ゲーム</h2></section>
+
+  <script>
+    const gistUrl = 'https://gist.githubusercontent.com/siawaseok3/fd85983aad7ecef06ae3e12e2064f4b7/raw/4d0cb4ebdec9035e4b36d0b27219a196bb34c5a2/trending.json';
+
+    fetch(gistUrl)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('updated').textContent = `更新日時: ${new Date(data.updated).toLocaleString()}`;
+
+        ['trending', 'music', 'gaming'].forEach(type => {
+          const container = document.getElementById(type);
+          data[type].forEach(video => {
+            const el = document.createElement('div');
+            el.className = 'video';
+            el.innerHTML = `
+              <img src="${video.thumbnails.medium.url}" alt="">
+              <div class="info">
+                <div class="title"><a href="https://www.youtube.com/watch?v=${video.id}" target="_blank">${video.title}</a></div>
+                <div class="meta">${video.channel}・${new Date(video.publishedAt).toLocaleDateString()}</div>
+              </div>
+            `;
+            container.appendChild(el);
+          });
+        });
+      })
+      .catch(err => {
+        document.body.innerHTML = '<p style="color:red;">データの取得に失敗しました。</p>';
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
