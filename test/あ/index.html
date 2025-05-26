@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>YouTube URL 送信</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 1rem;
+  }
+  input, button {
+    width: 100%;
+    padding: 0.6rem;
+    margin: 0.5rem 0;
+    font-size: 1rem;
+  }
+  #message {
+    margin-top: 1rem;
+    color: green;
+  }
+  #error {
+    margin-top: 1rem;
+    color: red;
+  }
+</style>
+</head>
+<body>
+  <h1>YouTube URL 送信</h1>
+  <input type="url" id="urlInput" placeholder="YouTube URLを入力してください" />
+  <button id="sendBtn">送信</button>
+  <p id="message"></p>
+  <p id="error"></p>
+
+  <script>
+    const urlInput = document.getElementById('urlInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const message = document.getElementById('message');
+    const error = document.getElementById('error');
+
+    sendBtn.addEventListener('click', async () => {
+      message.textContent = '';
+      error.textContent = '';
+
+      const url = urlInput.value.trim();
+      if (!url) {
+        error.textContent = 'URLを入力してください。';
+        return;
+      }
+
+      try {
+        const res = await fetch('http://192.168.11.4:3000/api/channel', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url }),
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTPエラー ${res.status}`);
+        }
+
+        const data = await res.json();
+        message.textContent = '送信成功: ' + JSON.stringify(data);
+      } catch (err) {
+        error.textContent = '送信失敗: ' + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
