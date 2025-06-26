@@ -9,17 +9,17 @@
     button { margin-top: 10px; padding: 8px 12px; font-size: 15px; }
     video { width: 100%; height: 400px; margin-top: 16px; background: black; }
     audio { display: none; }
-    .status { margin-top: 12px; color: #b00; white-space: pre-wrap; }
+    .status { margin-top: 12px; color: #555; white-space: pre-wrap; }
   </style>
 </head>
 <body>
-<h2>最初に合格した動画+音声ペア再生</h2>
+<h2>動画＋音声ペア再生</h2>
 <textarea id="jsonInput" placeholder='[
   { "video": "https://...", "audio": "https://..." },
   { "audio": "https://..." }
 ]'></textarea>
 <br>
-<button id="startBtn">再生可能ペアを探す</button>
+<button id="startBtn">再生</button>
 <div class="status" id="status"></div>
 <video id="video" controls></video>
 <audio id="audio" controls></audio>
@@ -60,7 +60,7 @@ function extractUrls(json) {
 }
 
 document.getElementById("startBtn").onclick = async () => {
-  status.textContent = "JSON読み込み中...";
+  status.textContent = "処理中...";
   let data;
   try {
     data = JSON.parse(document.getElementById("jsonInput").value);
@@ -72,13 +72,11 @@ document.getElementById("startBtn").onclick = async () => {
   const { videos, audios } = extractUrls(data);
   let okVideo = null, okAudio = null;
 
-  status.textContent = "動画の再生テスト中...";
   for (const url of videos) {
     okVideo = await testPlayable(url, "video");
     if (okVideo) break;
   }
 
-  status.textContent = "音声の再生テスト中...";
   for (const url of audios) {
     okAudio = await testPlayable(url, "audio");
     if (okAudio) break;
@@ -89,12 +87,12 @@ document.getElementById("startBtn").onclick = async () => {
     return;
   }
 
-  status.textContent = "動画: " + (okVideo || "なし") + "\n音声: " + (okAudio || "なし") + "\n同期再生開始";
+  status.textContent = "再生を開始します。";
   if (okVideo) video.src = okVideo;
   if (okAudio) audio.src = okAudio;
   video.load(); audio.load();
-  video.play().catch(() => status.textContent += "\n動画再生失敗");
-  audio.play().catch(() => status.textContent += "\n音声再生失敗");
+  video.play().catch(() => status.textContent = "動画再生失敗");
+  audio.play().catch(() => status.textContent = "音声再生失敗");
 };
 
 video.addEventListener("play", () => { if (audio.paused) audio.play(); });
