@@ -2,82 +2,25 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
-<title>同期再生：コンパクトUI版</title>
+<title>自動判別付き同期再生</title>
 <style>
-  body {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    margin: 20px;
-    max-width: 800px;
-  }
-  h2 {
-    margin-bottom: 6px;
-  }
-  textarea {
-    width: 100%;
-    height: 80px; /* 小さめ */
-    font-family: monospace;
-    font-size: 14px;
-    padding: 6px;
-    resize: vertical;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  .buttons {
-    margin: 10px 0;
-    display: flex;
-    gap: 12px;
-  }
-  button {
-    padding: 8px 16px;
-    font-size: 15px;
-    cursor: pointer;
-    border-radius: 6px;
-    border: none;
-    background-color: #0078d7;
-    color: white;
-    transition: background-color 0.2s;
-  }
-  button:hover:not(:disabled) {
-    background-color: #005ea0;
-  }
-  button:disabled {
-    background-color: #999;
-    cursor: not-allowed;
-  }
-  select {
-    width: 100%;
-    font-size: 16px;
-    padding: 6px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-  }
-  .status {
-    margin: 6px 0 10px;
-    color: #b00;
-    min-height: 20px;
-  }
-  .playing-info {
-    font-weight: bold;
-    margin-top: 8px;
-    font-size: 16px;
-    color: #004080;
-  }
-  video {
-    width: 100%;
-    height: 400px; /* 高さ固定 */
-    background: black;
-    border-radius: 6px;
-    outline: none;
-  }
-  audio {
-    display: none; /* 音声バーは消す */
-  }
+  body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; margin: 20px; max-width: 800px; }
+  h2 { margin-bottom: 8px; }
+  textarea { width: 100%; height: 80px; font-family: monospace; font-size: 14px; padding: 6px; resize: vertical; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+  .buttons { margin: 10px 0; display: flex; gap: 12px; }
+  button { padding: 8px 16px; font-size: 15px; cursor: pointer; border-radius: 6px; border: none; background-color: #0078d7; color: white; transition: background-color 0.2s; }
+  button:hover:not(:disabled) { background-color: #005ea0; }
+  button:disabled { background-color: #999; cursor: not-allowed; }
+  select { width: 100%; font-size: 16px; padding: 6px; border-radius: 4px; border: 1px solid #ccc; }
+  .status { margin: 6px 0 10px; color: #b00; min-height: 20px; white-space: pre-wrap; }
+  .playing-info { font-weight: bold; margin-top: 8px; font-size: 16px; color: #004080; }
+  video { width: 100%; height: 400px; background: black; border-radius: 6px; outline: none; }
+  audio { display: none; }
 </style>
 </head>
 <body>
 
-  <h2>ストリームJSONを貼り付けてセットアップ</h2>
+  <h2>ストリームJSONを貼り付けてセットアップ（自動再生可能セット抽出）</h2>
   <textarea id="jsonInput" placeholder='例:
 [
   {
@@ -87,12 +30,12 @@
 ]'></textarea>
 
   <div class="buttons">
-    <button id="setupButton">セットアップ</button>
+    <button id="setupButton">セットアップ（自動判定）</button>
   </div>
 
-  <label for="streamSelect">再生するセットを選択:</label>
+  <label for="streamSelect">再生可能なセットを選択:</label>
   <select id="streamSelect" disabled>
-    <option value="">-- ここにセットが表示されます --</option>
+    <option value="">-- セットアップしてください --</option>
   </select>
 
   <div class="buttons">
@@ -115,18 +58,98 @@
   const statusMsg = document.getElementById("statusMsg");
   const playingInfo = document.getElementById("playingInfo");
 
-  let streamData = [];
+  let allStreamData = [];
+  let playableStreams = [];
 
   function clearStatus() {
     statusMsg.textContent = "";
   }
-
   function setStatus(msg) {
     statusMsg.textContent = msg;
   }
 
-  setupButton.addEventListener("click", () => {
+  // 動画・音声の再生チェック関数（非表示でテスト再生）
+  async function testPlayable(videoUrl, audioUrl) {
+    return new Promise((resolve) => {
+      let videoTest = document.createElement("video");
+      let audioTest = document.createElement("audio");
+
+      let successFlags = { video: false, audio: false };
+
+      function cleanup() {
+        videoTest.pause();
+        audioTest.pause();
+        videoTest.src = "";
+        audioTest.src = "";
+        videoTest.remove();
+        audioTest.remove();
+      }
+
+      // タイムアウト処理（5秒以内に再生できなければ失敗扱い）
+      const timeoutId = setTimeout(() => {
+        cleanup();
+        resolve(false);
+      }, 5000);
+
+      // 再生成功時
+      function onVideoPlay() {
+        successFlags.video = true;
+        if (successFlags.audio) {
+          clearTimeout(timeoutId);
+          cleanup();
+          resolve(true);
+        }
+      }
+      function onAudioPlay() {
+        successFlags.audio = true;
+        if (successFlags.video) {
+          clearTimeout(timeoutId);
+          cleanup();
+          resolve(true);
+        }
+      }
+
+      videoTest.src = videoUrl;
+      audioTest.src = audioUrl;
+
+      videoTest.muted = true;
+      audioTest.muted = true;
+
+      // イベント登録
+      videoTest.addEventListener("playing", onVideoPlay);
+      videoTest.addEventListener("error", () => {
+        clearTimeout(timeoutId);
+        cleanup();
+        resolve(false);
+      });
+
+      audioTest.addEventListener("playing", onAudioPlay);
+      audioTest.addEventListener("error", () => {
+        clearTimeout(timeoutId);
+        cleanup();
+        resolve(false);
+      });
+
+      // 読み込み失敗もキャッチ
+      videoTest.addEventListener("stalled", () => {});
+      audioTest.addEventListener("stalled", () => {});
+
+      // 再生トライ（load後にplay）
+      videoTest.load();
+      audioTest.load();
+
+      Promise.all([videoTest.play(), audioTest.play()]).catch(() => {
+        clearTimeout(timeoutId);
+        cleanup();
+        resolve(false);
+      });
+    });
+  }
+
+  async function setupStreams() {
     clearStatus();
+    setStatus("セットアップ中... 再生可能かテストしています。少し時間がかかる場合があります。");
+
     try {
       const parsed = JSON.parse(jsonInput.value.trim());
       if (!Array.isArray(parsed)) throw new Error("JSONは配列である必要があります。");
@@ -136,28 +159,57 @@
         }
       }
 
-      streamData = parsed;
-      streamSelect.innerHTML = '<option value="">-- セットを選んでください --</option>';
-      streamData.forEach((item, index) => {
-        const label = `セット ${index + 1} — 映像URLの先頭: ${item.video.slice(0, 40)}...`;
+      allStreamData = parsed;
+      playableStreams = [];
+
+      for (let i = 0; i < allStreamData.length; i++) {
+        setStatus(`セット ${i + 1} をテスト中...`);
+        // eslint-disable-next-line no-await-in-loop
+        const playable = await testPlayable(allStreamData[i].video, allStreamData[i].audio);
+        if (playable) {
+          playableStreams.push({ index: i, ...allStreamData[i] });
+          setStatus(`セット ${i + 1} は再生可能です。`);
+        } else {
+          setStatus(`セット ${i + 1} は再生できませんでした。`);
+        }
+      }
+
+      if (playableStreams.length === 0) {
+        setStatus("再生可能なセットは見つかりませんでした。");
+        streamSelect.innerHTML = '<option value="">-- 再生可能なセットなし --</option>';
+        streamSelect.disabled = true;
+        playButton.disabled = true;
+        playingInfo.textContent = "";
+        return;
+      }
+
+      // 選択肢を更新
+      streamSelect.innerHTML = '<option value="">-- 再生可能なセットを選択 --</option>';
+      playableStreams.forEach(({ index, video }) => {
+        const label = `セット ${index + 1} — 映像URL先頭: ${video.slice(0, 40)}...`;
         const opt = document.createElement("option");
         opt.value = index;
         opt.textContent = label;
         streamSelect.appendChild(opt);
       });
-
       streamSelect.disabled = false;
       playButton.disabled = false;
       playingInfo.textContent = "";
-      setStatus("セットアップ完了。再生するセットを選択してください。");
+      setStatus(`セットアップ完了。再生可能なセットが ${playableStreams.length} 件あります。`);
+
     } catch (e) {
       setStatus("JSONエラー: " + e.message);
       streamSelect.innerHTML = '<option value="">-- エラーのため選択不可 --</option>';
       streamSelect.disabled = true;
       playButton.disabled = true;
       playingInfo.textContent = "";
-      streamData = [];
+      allStreamData = [];
+      playableStreams = [];
     }
+  }
+
+  setupButton.addEventListener("click", () => {
+    setupStreams();
   });
 
   playButton.addEventListener("click", () => {
@@ -167,8 +219,13 @@
       setStatus("再生するセットを選んでください。");
       return;
     }
+    // playableStreams内から選択
+    const selected = playableStreams.find(s => s.index == selectedIndex);
+    if (!selected) {
+      setStatus("選択したセットは再生可能リストにありません。");
+      return;
+    }
 
-    const selected = streamData[selectedIndex];
     video.src = selected.video;
     audio.src = selected.audio;
 
@@ -188,20 +245,18 @@
   video.addEventListener('play', () => {
     if (audio.paused) audio.play();
   });
-
   video.addEventListener('pause', () => {
     if (!audio.paused) audio.pause();
   });
-
   video.addEventListener('seeked', () => {
     audio.currentTime = video.currentTime;
   });
-
   setInterval(() => {
     if (Math.abs(video.currentTime - audio.currentTime) > 0.3) {
       audio.currentTime = video.currentTime;
     }
   }, 500);
+
 </script>
 </body>
 </html>
