@@ -1,200 +1,207 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <title>YouTube動画情報取得</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 2rem;
-    }
-    input[type="text"] {
-      width: 70%;
-      padding: 0.5rem;
-    }
-    button {
-      padding: 0.5rem 1rem;
-      margin: 0.25rem;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      margin-top: 1rem;
-    }
-    th, td {
-      border: 1px solid #aaa;
-      padding: 6px;
-      text-align: center;
-    }
-    th {
-      background: #ddd;
-    }
-    a {
-      color: #06c;
-    }
-    textarea {
-      margin-top: 1rem;
-      width: 100%;
-    }
-    /* ここがスクロール可能な結果表示エリアの設定 */
-    #result {
-      height: 300px;       /* 固定高さ */
-      overflow-y: auto;    /* 縦スクロール */
-      white-space: pre-wrap;
-      background: #f0f0f0;
-      padding: 1rem;
-      border-radius: 4px;
-      margin-top: 1rem;
-      border: 1px solid #ccc;
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>同期再生：コンパクトUI版</title>
+<style>
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 20px;
+    max-width: 800px;
+  }
+  h2 {
+    margin-bottom: 6px;
+  }
+  textarea {
+    width: 100%;
+    height: 80px; /* 小さめ */
+    font-family: monospace;
+    font-size: 14px;
+    padding: 6px;
+    resize: vertical;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .buttons {
+    margin: 10px 0;
+    display: flex;
+    gap: 12px;
+  }
+  button {
+    padding: 8px 16px;
+    font-size: 15px;
+    cursor: pointer;
+    border-radius: 6px;
+    border: none;
+    background-color: #0078d7;
+    color: white;
+    transition: background-color 0.2s;
+  }
+  button:hover:not(:disabled) {
+    background-color: #005ea0;
+  }
+  button:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+  }
+  select {
+    width: 100%;
+    font-size: 16px;
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  .status {
+    margin: 6px 0 10px;
+    color: #b00;
+    min-height: 20px;
+  }
+  .playing-info {
+    font-weight: bold;
+    margin-top: 8px;
+    font-size: 16px;
+    color: #004080;
+  }
+  video {
+    width: 100%;
+    height: 400px; /* 高さ固定 */
+    background: black;
+    border-radius: 6px;
+    outline: none;
+  }
+  audio {
+    display: none; /* 音声バーは消す */
+  }
+</style>
 </head>
 <body>
-  <h1>YouTube動画情報取得</h1>
-  <form id="form">
-    <input type="text" id="url" placeholder="YouTube動画URLを入力" required />
-    <button type="submit">取得(見やすくしたの)</button>
-    <button type="button" id="jsonBtn">JSONで取得</button>
-  </form>
 
-  <label for="qualitySelect">画質を選択:</label>
-  <select id="qualitySelect">
-    <option value="">（読み込み後に選べます）</option>
-  </select>
-  <button type="button" id="autoGenerate">自動でセット作成</button>
-  <button type="button" id="manualMode">手動でセット作成</button>
+  <h2>ストリームJSONを貼り付けてセットアップ</h2>
+  <textarea id="jsonInput" placeholder='例:
+[
+  {
+    "video": "https://rr3---sn-xxx.googlevideo.com/videoplayback?itag=22&...",
+    "audio": "https://rr3---sn-xxx.googlevideo.com/videoplayback?itag=140&..."
+  }
+]'></textarea>
 
-  <!-- 結果表示はボタンの下に移動 -->
-  <div id="result"></div>
-
-  <div id="setArea">
-    <textarea id="setJson" rows="10"></textarea>
-    <button id="copySet" type="button">コピー</button>
+  <div class="buttons">
+    <button id="setupButton">セットアップ</button>
   </div>
 
-  <script>
-    const form = document.getElementById("form");
-    const urlInput = document.getElementById("url");
-    const resultDiv = document.getElementById("result");
-    const jsonBtn = document.getElementById("jsonBtn");
+  <label for="streamSelect">再生するセットを選択:</label>
+  <select id="streamSelect" disabled>
+    <option value="">-- ここにセットが表示されます --</option>
+  </select>
 
-    let cachedFormats = null;
+  <div class="buttons">
+    <button id="playButton" disabled>再生</button>
+  </div>
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      resultDiv.textContent = "読み込み中...";
-      const url = urlInput.value;
-      try {
-        const res = await fetch("/api/info", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url }),
-        });
-        if (!res.ok) {
-          resultDiv.textContent = "エラー: " + (await res.text());
-          return;
+  <div class="status" id="statusMsg"></div>
+  <div class="playing-info" id="playingInfo"></div>
+
+  <video id="video" controls></video>
+  <audio id="audio" controls></audio>
+
+<script>
+  const jsonInput = document.getElementById("jsonInput");
+  const setupButton = document.getElementById("setupButton");
+  const streamSelect = document.getElementById("streamSelect");
+  const playButton = document.getElementById("playButton");
+  const video = document.getElementById("video");
+  const audio = document.getElementById("audio");
+  const statusMsg = document.getElementById("statusMsg");
+  const playingInfo = document.getElementById("playingInfo");
+
+  let streamData = [];
+
+  function clearStatus() {
+    statusMsg.textContent = "";
+  }
+
+  function setStatus(msg) {
+    statusMsg.textContent = msg;
+  }
+
+  setupButton.addEventListener("click", () => {
+    clearStatus();
+    try {
+      const parsed = JSON.parse(jsonInput.value.trim());
+      if (!Array.isArray(parsed)) throw new Error("JSONは配列である必要があります。");
+      for (const [i, item] of parsed.entries()) {
+        if (typeof item.video !== "string" || typeof item.audio !== "string") {
+          throw new Error(`セット ${i + 1} に video と audio のURLが必要です`);
         }
-        const html = await res.text();
-        resultDiv.innerHTML = html;
-
-        // formatsを取得してセレクトに追加
-        const scriptTag = document.querySelector("script[data-info]");
-        if (scriptTag) {
-          const data = JSON.parse(scriptTag.dataset.info);
-          cachedFormats = data.formats;
-
-          const qualitySet = new Set();
-          cachedFormats
-            .filter(f => f.qualityLabel && !f.audioCodec)
-            .forEach(f => qualitySet.add(f.qualityLabel));
-
-          const qualitySelect = document.getElementById("qualitySelect");
-          qualitySelect.innerHTML = `<option value="">選んでください</option>`;
-          [...qualitySet].sort((a, b) => {
-            const toNum = s => parseInt(s) || 0;
-            return toNum(b) - toNum(a);
-          }).forEach(q => {
-            const opt = document.createElement("option");
-            opt.value = q;
-            opt.textContent = q;
-            qualitySelect.appendChild(opt);
-          });
-        }
-      } catch (err) {
-        resultDiv.textContent = "通信エラー";
-      }
-    });
-
-    jsonBtn.addEventListener("click", async () => {
-      const url = urlInput.value;
-      if (!url) return alert("URLを入力してください");
-      resultDiv.textContent = "読み込み中...";
-      try {
-        const res = await fetch("/api/info?format=json", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url }),
-        });
-        if (!res.ok) {
-          resultDiv.textContent = "エラー: " + (await res.text());
-          return;
-        }
-        const data = await res.json();
-        resultDiv.textContent = JSON.stringify(data, null, 2);
-      } catch (err) {
-        resultDiv.textContent = "通信エラー";
-      }
-    });
-
-    document.getElementById("autoGenerate").addEventListener("click", (e) => {
-      e.preventDefault();
-      if (!cachedFormats) return alert("まずは動画情報を取得してください。");
-
-      const selectedQuality = document.getElementById("qualitySelect").value;
-      if (!selectedQuality) return alert("画質を選んでください。");
-
-      const videoOnly = cachedFormats.filter(
-        f => f.qualityLabel === selectedQuality && !f.audioCodec
-      );
-      const audioOnly = cachedFormats.filter(
-        f => !f.qualityLabel && f.audioCodec
-      );
-
-      if (videoOnly.length === 0 || audioOnly.length === 0) {
-        return alert("対応する映像または音声が見つかりません");
       }
 
-      const pairs = videoOnly.map(video => ({
-        video: video.url,
-        audio: audioOnly[0].url
-      }));
-
-      document.getElementById("setJson").value = JSON.stringify(pairs, null, 2);
-    });
-
-    document.getElementById("manualMode").addEventListener("click", (e) => {
-      e.preventDefault();
-      const selected = [...document.querySelectorAll('input[name="streamSelect"]:checked')];
-      let video = null, audio = null;
-      selected.forEach(el => {
-        const type = el.dataset.type;
-        if (type === "video") video = el.value;
-        if (type === "audio") audio = el.value;
+      streamData = parsed;
+      streamSelect.innerHTML = '<option value="">-- セットを選んでください --</option>';
+      streamData.forEach((item, index) => {
+        const label = `セット ${index + 1} — 映像URLの先頭: ${item.video.slice(0, 40)}...`;
+        const opt = document.createElement("option");
+        opt.value = index;
+        opt.textContent = label;
+        streamSelect.appendChild(opt);
       });
 
-      if (!video || !audio) {
-        alert("映像と音声を両方選択してください");
-        return;
-      }
+      streamSelect.disabled = false;
+      playButton.disabled = false;
+      playingInfo.textContent = "";
+      setStatus("セットアップ完了。再生するセットを選択してください。");
+    } catch (e) {
+      setStatus("JSONエラー: " + e.message);
+      streamSelect.innerHTML = '<option value="">-- エラーのため選択不可 --</option>';
+      streamSelect.disabled = true;
+      playButton.disabled = true;
+      playingInfo.textContent = "";
+      streamData = [];
+    }
+  });
 
-      const json = JSON.stringify([{ video, audio }], null, 2);
-      document.getElementById("setJson").value = json;
+  playButton.addEventListener("click", () => {
+    clearStatus();
+    const selectedIndex = streamSelect.value;
+    if (selectedIndex === "") {
+      setStatus("再生するセットを選んでください。");
+      return;
+    }
+
+    const selected = streamData[selectedIndex];
+    video.src = selected.video;
+    audio.src = selected.audio;
+
+    video.load();
+    audio.load();
+
+    video.play().catch(() => {
+      setStatus("動画の再生に失敗しました。");
+    });
+    audio.play().catch(() => {
+      setStatus("音声の再生に失敗しました。");
     });
 
-    document.getElementById("copySet").addEventListener("click", () => {
-      const text = document.getElementById("setJson").value;
-      navigator.clipboard.writeText(text).then(() => alert("コピーしました！"));
-    });
-  </script>
+    playingInfo.textContent = `再生中: セット ${parseInt(selectedIndex, 10) + 1}`;
+  });
+
+  video.addEventListener('play', () => {
+    if (audio.paused) audio.play();
+  });
+
+  video.addEventListener('pause', () => {
+    if (!audio.paused) audio.pause();
+  });
+
+  video.addEventListener('seeked', () => {
+    audio.currentTime = video.currentTime;
+  });
+
+  setInterval(() => {
+    if (Math.abs(video.currentTime - audio.currentTime) > 0.3) {
+      audio.currentTime = video.currentTime;
+    }
+  }, 500);
+</script>
 </body>
 </html>
