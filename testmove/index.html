@@ -1,226 +1,110 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8" />
-<title>動画・音声URL分離して合格ペア自動生成 同期再生</title>
-<style>
-  body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; margin: 20px; max-width: 700px; }
-  textarea { width: 100%; height: 80px; font-family: monospace; font-size: 14px; padding: 6px; resize: vertical; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-  label { display: block; margin: 10px 0 4px; font-weight: bold; }
-  select { width: 100%; padding: 6px; font-size: 15px; border-radius: 4px; border: 1px solid #ccc; }
-  button { margin-top: 12px; padding: 8px 16px; font-size: 15px; cursor: pointer; border-radius: 6px; border: none; background-color: #0078d7; color: white; transition: background-color 0.2s; }
-  button:hover:not(:disabled) { background-color: #005ea0; }
-  button:disabled { background-color: #999; cursor: not-allowed; }
-  .status { margin-top: 12px; color: #b00; white-space: pre-wrap; min-height: 40px; }
-  video { width: 100%; height: 400px; background: black; border-radius: 6px; margin-top: 16px; }
-  audio { display: none; }
-</style>
+  <meta charset="UTF-8">
+  <title>最初に合格した動画+音声ペア再生</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; max-width: 700px; }
+    textarea { width: 100%; height: 100px; font-family: monospace; padding: 6px; }
+    button { margin-top: 10px; padding: 8px 12px; font-size: 15px; }
+    video { width: 100%; height: 400px; margin-top: 16px; background: black; }
+    audio { display: none; }
+    .status { margin-top: 12px; color: #b00; white-space: pre-wrap; }
+  </style>
 </head>
 <body>
-
-<h2>動画・音声URL分離して合格ペア自動生成 同期再生</h2>
-<textarea id="jsonInput" placeholder='例:
-[
-  {
-    "video": "https://rr3---sn-xxx.googlevideo.com/videoplayback?itag=22&...",
-    "audio": "https://rr3---sn-xxx.googlevideo.com/videoplayback?itag=140&..."
-  },
-  {
-    "video": "https://rr3---sn-yyy.googlevideo.com/videoplayback?itag=247&...",
-    "audio": "https://rr3---sn-xxx.googlevideo.com/videoplayback?itag=140&..."
-  }
-]
-'></textarea>
-
-<button id="parseButton">JSON読み込み＆テスト実行</button>
-
-<label for="pairSelect">合格した動画×音声ペアを選択してください</label>
-<select id="pairSelect" disabled>
-  <option>まずはJSONを読み込んでください</option>
-</select>
-
-<button id="playButton" disabled>選択ペアで再生</button>
-
-<div class="status" id="statusMsg"></div>
-
+<h2>最初に合格した動画+音声ペア再生</h2>
+<textarea id="jsonInput" placeholder='[
+  { "video": "https://...", "audio": "https://..." },
+  { "audio": "https://..." }
+]'></textarea>
+<br>
+<button id="startBtn">再生可能ペアを探す</button>
+<div class="status" id="status"></div>
 <video id="video" controls></video>
 <audio id="audio" controls></audio>
 
 <script>
-  const jsonInput = document.getElementById("jsonInput");
-  const parseButton = document.getElementById("parseButton");
-  const pairSelect = document.getElementById("pairSelect");
-  const playButton = document.getElementById("playButton");
-  const statusMsg = document.getElementById("statusMsg");
-  const video = document.getElementById("video");
-  const audio = document.getElementById("audio");
+const video = document.getElementById("video");
+const audio = document.getElementById("audio");
+const status = document.getElementById("status");
 
-  async function testMediaPlayable(url, type) {
-    return new Promise((resolve) => {
-      const media = document.createElement(type);
-      let settled = false;
-
-      function cleanup() {
-        media.pause();
-        media.src = "";
-        media.remove();
-      }
-
-      const timeoutId = setTimeout(() => {
-        if (!settled) {
-          settled = true;
-          cleanup();
-          resolve(false);
-        }
-      }, 4000);
-
-      media.src = url;
-      media.muted = true;
-
-      media.addEventListener('playing', () => {
-        if (!settled) {
-          settled = true;
-          clearTimeout(timeoutId);
-          cleanup();
-          resolve(true);
-        }
-      });
-
-      media.addEventListener('error', () => {
-        if (!settled) {
-          settled = true;
-          clearTimeout(timeoutId);
-          cleanup();
-          resolve(false);
-        }
-      });
-
-      media.load();
-      media.play().catch(() => {
-        if (!settled) {
-          settled = true;
-          clearTimeout(timeoutId);
-          cleanup();
-          resolve(false);
-        }
-      });
+function testPlayable(url, type) {
+  return new Promise((resolve) => {
+    const el = document.createElement(type);
+    let done = false;
+    const timeout = setTimeout(() => {
+      if (!done) { done = true; el.remove(); resolve(null); }
+    }, 4000);
+    el.src = url;
+    el.muted = true;
+    el.addEventListener("playing", () => {
+      if (!done) { done = true; clearTimeout(timeout); el.remove(); resolve(url); }
     });
+    el.addEventListener("error", () => {
+      if (!done) { done = true; clearTimeout(timeout); el.remove(); resolve(null); }
+    });
+    el.load();
+    el.play().catch(() => resolve(null));
+  });
+}
+
+function extractUrls(json) {
+  const videos = new Set();
+  const audios = new Set();
+  for (const item of json) {
+    if (item.video) videos.add(item.video);
+    if (item.audio) audios.add(item.audio);
+  }
+  return { videos: [...videos], audios: [...audios] };
+}
+
+document.getElementById("startBtn").onclick = async () => {
+  status.textContent = "JSON読み込み中...";
+  let data;
+  try {
+    data = JSON.parse(document.getElementById("jsonInput").value);
+  } catch (e) {
+    status.textContent = "JSONエラー: " + e.message;
+    return;
   }
 
-  async function testUrlsSequential(urls, type) {
-    const results = [];
-    for (const url of urls) {
-      statusMsg.textContent = `【${type}】再生テスト中: ${url.slice(0,50)}...`;
-      const ok = await testMediaPlayable(url, type);
-      results.push({url, ok});
-    }
-    return results;
+  const { videos, audios } = extractUrls(data);
+  let okVideo = null, okAudio = null;
+
+  status.textContent = "動画の再生テスト中...";
+  for (const url of videos) {
+    okVideo = await testPlayable(url, "video");
+    if (okVideo) break;
   }
 
-  parseButton.onclick = async () => {
-    statusMsg.textContent = "JSONをパース中...";
-    pairSelect.disabled = true;
-    playButton.disabled = true;
-    pairSelect.innerHTML = "";
+  status.textContent = "音声の再生テスト中...";
+  for (const url of audios) {
+    okAudio = await testPlayable(url, "audio");
+    if (okAudio) break;
+  }
 
-    let parsed;
-    try {
-      parsed = JSON.parse(jsonInput.value.trim());
-      if (!Array.isArray(parsed)) throw new Error("JSONは配列である必要があります");
-    } catch (e) {
-      statusMsg.textContent = "JSONエラー: " + e.message;
-      return;
-    }
+  if (!okVideo && !okAudio) {
+    status.textContent = "再生できる動画も音声も見つかりませんでした。";
+    return;
+  }
 
-    // 動画と音声をそれぞれ抽出し重複除去
-    const videoSet = new Set();
-    const audioSet = new Set();
-    for (const item of parsed) {
-      if (item.video && typeof item.video === 'string') videoSet.add(item.video);
-      if (item.audio && typeof item.audio === 'string') audioSet.add(item.audio);
-    }
-    const videoUrls = [...videoSet];
-    const audioUrls = [...audioSet];
+  status.textContent = "動画: " + (okVideo || "なし") + "\n音声: " + (okAudio || "なし") + "\n同期再生開始";
+  if (okVideo) video.src = okVideo;
+  if (okAudio) audio.src = okAudio;
+  video.load(); audio.load();
+  video.play().catch(() => status.textContent += "\n動画再生失敗");
+  audio.play().catch(() => status.textContent += "\n音声再生失敗");
+};
 
-    statusMsg.textContent = `動画URL数: ${videoUrls.length}件、音声URL数: ${audioUrls.length}件。再生テストを開始します...`;
-
-    // 順次テスト
-    const videoResults = await testUrlsSequential(videoUrls, "video");
-    const audioResults = await testUrlsSequential(audioUrls, "audio");
-
-    // 合格リスト抽出
-    const passedVideos = videoResults.filter(v => v.ok).map(v => v.url);
-    const passedAudios = audioResults.filter(a => a.ok).map(a => a.url);
-
-    if(passedVideos.length === 0 || passedAudios.length === 0) {
-      statusMsg.textContent = `再生可能な動画または音声がありません。\n動画合格: ${passedVideos.length}件\n音声合格: ${passedAudios.length}件`;
-      return;
-    }
-
-    statusMsg.textContent = `動画合格: ${passedVideos.length}件、音声合格: ${passedAudios.length}件。\nペア生成中...`;
-
-    // 合格動画×合格音声の全組み合わせペア作成
-    const pairs = [];
-    for (const v of passedVideos) {
-      for (const a of passedAudios) {
-        pairs.push({ video: v, audio: a });
-      }
-    }
-
-    // セレクトボックスにセット
-    pairSelect.innerHTML = "";
-    pairs.forEach((p, i) => {
-      const opt = document.createElement("option");
-      opt.value = i;
-      opt.textContent = `セット${i+1} - 映像: ${p.video.slice(0,40)}… 音声: ${p.audio.slice(0,40)}…`;
-      pairSelect.appendChild(opt);
-    });
-    pairSelect.disabled = false;
-    playButton.disabled = false;
-
-    // ペア配列を保持
-    pairSelect._pairs = pairs;
-
-    statusMsg.textContent = `ペア${pairs.length}件を生成しました。選択して再生してください。`;
-  };
-
-  playButton.onclick = () => {
-    const idx = Number(pairSelect.value);
-    if (isNaN(idx) || !pairSelect._pairs || !pairSelect._pairs[idx]) {
-      statusMsg.textContent = "ペアを選択してください。";
-      return;
-    }
-    const pair = pairSelect._pairs[idx];
-    video.src = pair.video;
-    audio.src = pair.audio;
-    video.load();
-    audio.load();
-
-    video.play().catch(() => {
-      statusMsg.textContent = "動画の再生に失敗しました。";
-    });
-    audio.play().catch(() => {
-      statusMsg.textContent = "音声の再生に失敗しました。";
-    });
-  };
-
-  // 動画再生に合わせて音声再生・一時停止、シーク同期
-  video.addEventListener('play', () => {
-    if (audio.paused) audio.play();
-  });
-  video.addEventListener('pause', () => {
-    if (!audio.paused) audio.pause();
-  });
-  video.addEventListener('seeked', () => {
+video.addEventListener("play", () => { if (audio.paused) audio.play(); });
+video.addEventListener("pause", () => { if (!audio.paused) audio.pause(); });
+video.addEventListener("seeked", () => { audio.currentTime = video.currentTime; });
+setInterval(() => {
+  if (Math.abs(video.currentTime - audio.currentTime) > 0.3) {
     audio.currentTime = video.currentTime;
-  });
-  setInterval(() => {
-    if (Math.abs(video.currentTime - audio.currentTime) > 0.3) {
-      audio.currentTime = video.currentTime;
-    }
-  }, 500);
-
+  }
+}, 500);
 </script>
-
 </body>
 </html>
