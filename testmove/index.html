@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
-<title>自動判別付き同期再生</title>
+<title>同期再生 自動ペア検出 完全版</title>
 <style>
   body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; margin: 20px; max-width: 800px; }
   h2 { margin-bottom: 8px; }
@@ -12,7 +12,7 @@
   button:hover:not(:disabled) { background-color: #005ea0; }
   button:disabled { background-color: #999; cursor: not-allowed; }
   select { width: 100%; font-size: 16px; padding: 6px; border-radius: 4px; border: 1px solid #ccc; }
-  .status { margin: 6px 0 10px; color: #b00; min-height: 20px; white-space: pre-wrap; }
+  .status { margin: 6px 0 10px; color: #b00; min-height: 40px; white-space: pre-wrap; font-size: 14px; }
   .playing-info { font-weight: bold; margin-top: 8px; font-size: 16px; color: #004080; }
   video { width: 100%; height: 400px; background: black; border-radius: 6px; outline: none; }
   audio { display: none; }
@@ -20,7 +20,7 @@
 </head>
 <body>
 
-  <h2>ストリームJSONを貼り付けてセットアップ（自動再生可能セット抽出）</h2>
+  <h2>ストリームJSONを貼り付けてセットアップ（自動再生可能ペア検出）</h2>
   <textarea id="jsonInput" placeholder='例:
 [
   {
@@ -30,7 +30,7 @@
 ]'></textarea>
 
   <div class="buttons">
-    <button id="setupButton">セットアップ（自動判定）</button>
+    <button id="setupButton">セットアップ（テスト開始）</button>
   </div>
 
   <label for="streamSelect">再生可能なセットを選択:</label>
@@ -58,87 +58,44 @@
   const statusMsg = document.getElementById("statusMsg");
   const playingInfo = document.getElementById("playingInfo");
 
-  let allStreamData = [];
-  let playableStreams = [];
+  let videoAbort = false;
+  let audioAbort = false;
 
-  function clearStatus() {
-    statusMsg.textContent = "";
-  }
-  function setStatus(msg) {
-    statusMsg.textContent = msg;
-  }
-
-  // 動画・音声の再生チェック関数（非表示でテスト再生）
-  async function testPlayable(videoUrl, audioUrl) {
+  // 再生テスト関数
+  async function testMediaPlayable(url, type) {
     return new Promise((resolve) => {
-      let videoTest = document.createElement("video");
-      let audioTest = document.createElement("audio");
-
-      let successFlags = { video: false, audio: false };
+      let media = document.createElement(type);
+      let success = false;
 
       function cleanup() {
-        videoTest.pause();
-        audioTest.pause();
-        videoTest.src = "";
-        audioTest.src = "";
-        videoTest.remove();
-        audioTest.remove();
+        media.pause();
+        media.src = "";
+        media.remove();
       }
 
-      // タイムアウト処理（5秒以内に再生できなければ失敗扱い）
       const timeoutId = setTimeout(() => {
         cleanup();
         resolve(false);
-      }, 5000);
+      }, 4000);
 
-      // 再生成功時
-      function onVideoPlay() {
-        successFlags.video = true;
-        if (successFlags.audio) {
-          clearTimeout(timeoutId);
-          cleanup();
-          resolve(true);
-        }
-      }
-      function onAudioPlay() {
-        successFlags.audio = true;
-        if (successFlags.video) {
-          clearTimeout(timeoutId);
-          cleanup();
-          resolve(true);
-        }
-      }
+      media.src = url;
+      media.muted = true;
 
-      videoTest.src = videoUrl;
-      audioTest.src = audioUrl;
+      media.addEventListener('playing', () => {
+        success = true;
+        clearTimeout(timeoutId);
+        cleanup();
+        resolve(true);
+      });
 
-      videoTest.muted = true;
-      audioTest.muted = true;
-
-      // イベント登録
-      videoTest.addEventListener("playing", onVideoPlay);
-      videoTest.addEventListener("error", () => {
+      media.addEventListener('error', () => {
         clearTimeout(timeoutId);
         cleanup();
         resolve(false);
       });
 
-      audioTest.addEventListener("playing", onAudioPlay);
-      audioTest.addEventListener("error", () => {
-        clearTimeout(timeoutId);
-        cleanup();
-        resolve(false);
-      });
-
-      // 読み込み失敗もキャッチ
-      videoTest.addEventListener("stalled", () => {});
-      audioTest.addEventListener("stalled", () => {});
-
-      // 再生トライ（load後にplay）
-      videoTest.load();
-      audioTest.load();
-
-      Promise.all([videoTest.play(), audioTest.play()]).catch(() => {
+      media.load();
+      media.play().catch(() => {
         clearTimeout(timeoutId);
         cleanup();
         resolve(false);
@@ -146,102 +103,172 @@
     });
   }
 
-  async function setupStreams() {
-    clearStatus();
-    setStatus("セットアップ中... 再生可能かテストしています。少し時間がかかる場合があります。");
+  // 片方のテストを途中で止めるためのabortフラグを扱う関数
+  async function findPlayablePairsPartial(videoUrls, audioUrls, onStatus) {
+    const videoResults = {};
+    const audioResults = {};
 
+    let foundPair = null;
+
+    // 動画テスト直列
+    async function testVideos() {
+      for (const vUrl of videoUrls) {
+        if (videoAbort) {
+          onStatus && onStatus(`動画テスト停止`);
+          return;
+        }
+        onStatus && onStatus(`動画URLテスト中: ${vUrl.slice(0,40)}...`);
+        const ok = await testMediaPlayable(vUrl, 'video');
+        videoResults[vUrl] = ok;
+        if (ok) {
+          onStatus && onStatus(`動画URL 再生可能を発見: ${vUrl.slice(0,40)}...`);
+          videoAbort = true;
+          // 音声OKがあればペア成立
+          for (const aUrl in audioResults) {
+            if (audioResults[aUrl]) {
+              foundPair = { video: vUrl, audio: aUrl };
+              return;
+            }
+          }
+        }
+      }
+    }
+
+    // 音声テスト直列
+    async function testAudios() {
+      for (const aUrl of audioUrls) {
+        if (audioAbort) {
+          onStatus && onStatus(`音声テスト停止`);
+          return;
+        }
+        onStatus && onStatus(`音声URLテスト中: ${aUrl.slice(0,40)}...`);
+        const ok = await testMediaPlayable(aUrl, 'audio');
+        audioResults[aUrl] = ok;
+        if (ok) {
+          onStatus && onStatus(`音声URL 再生可能を発見: ${aUrl.slice(0,40)}...`);
+          audioAbort = true;
+          // 動画OKがあればペア成立
+          for (const vUrl in videoResults) {
+            if (videoResults[vUrl]) {
+              foundPair = { video: vUrl, audio: aUrl };
+              return;
+            }
+          }
+        }
+      }
+    }
+
+    // 並列開始
+    await Promise.all([testVideos(), testAudios()]);
+
+    return { foundPair, videoResults, audioResults };
+  }
+
+  // UIセットアップ
+  setupButton.addEventListener("click", async () => {
+    statusMsg.textContent = "セットアップ中…テストを開始します。";
+    playingInfo.textContent = "";
+    streamSelect.innerHTML = '<option value="">-- セットアップ中 --</option>';
+    streamSelect.disabled = true;
+    playButton.disabled = true;
+
+    videoAbort = false;
+    audioAbort = false;
+
+    let parsed;
     try {
-      const parsed = JSON.parse(jsonInput.value.trim());
+      parsed = JSON.parse(jsonInput.value.trim());
       if (!Array.isArray(parsed)) throw new Error("JSONは配列である必要があります。");
       for (const [i, item] of parsed.entries()) {
         if (typeof item.video !== "string" || typeof item.audio !== "string") {
           throw new Error(`セット ${i + 1} に video と audio のURLが必要です`);
         }
       }
+    } catch(e) {
+      statusMsg.textContent = "JSONエラー: " + e.message;
+      return;
+    }
 
-      allStreamData = parsed;
-      playableStreams = [];
+    const videoUrls = [...new Set(parsed.map(p => p.video))];
+    const audioUrls = [...new Set(parsed.map(p => p.audio))];
 
-      for (let i = 0; i < allStreamData.length; i++) {
-        setStatus(`セット ${i + 1} をテスト中...`);
-        // eslint-disable-next-line no-await-in-loop
-        const playable = await testPlayable(allStreamData[i].video, allStreamData[i].audio);
-        if (playable) {
-          playableStreams.push({ index: i, ...allStreamData[i] });
-          setStatus(`セット ${i + 1} は再生可能です。`);
-        } else {
-          setStatus(`セット ${i + 1} は再生できませんでした。`);
-        }
-      }
+    // 状況表示用コールバック
+    const onStatus = (msg) => {
+      statusMsg.textContent = msg;
+    };
 
-      if (playableStreams.length === 0) {
-        setStatus("再生可能なセットは見つかりませんでした。");
-        streamSelect.innerHTML = '<option value="">-- 再生可能なセットなし --</option>';
-        streamSelect.disabled = true;
-        playButton.disabled = true;
-        playingInfo.textContent = "";
-        return;
-      }
+    const { foundPair, videoResults, audioResults } = await findPlayablePairsPartial(videoUrls, audioUrls, onStatus);
 
-      // 選択肢を更新
-      streamSelect.innerHTML = '<option value="">-- 再生可能なセットを選択 --</option>';
-      playableStreams.forEach(({ index, video }) => {
-        const label = `セット ${index + 1} — 映像URL先頭: ${video.slice(0, 40)}...`;
-        const opt = document.createElement("option");
-        opt.value = index;
-        opt.textContent = label;
-        streamSelect.appendChild(opt);
-      });
-      streamSelect.disabled = false;
-      playButton.disabled = false;
-      playingInfo.textContent = "";
-      setStatus(`セットアップ完了。再生可能なセットが ${playableStreams.length} 件あります。`);
+    // 再生可能セット一覧作成（片方だけOKも含む）
+    const playableSets = parsed.filter(item => {
+      return (videoResults[item.video] || false) || (audioResults[item.audio] || false);
+    });
 
-    } catch (e) {
-      setStatus("JSONエラー: " + e.message);
-      streamSelect.innerHTML = '<option value="">-- エラーのため選択不可 --</option>';
+    if(playableSets.length === 0){
+      streamSelect.innerHTML = '<option value="">-- 再生可能なセットがありません --</option>';
       streamSelect.disabled = true;
       playButton.disabled = true;
-      playingInfo.textContent = "";
-      allStreamData = [];
-      playableStreams = [];
+      statusMsg.textContent = "再生可能なセットは見つかりませんでした。";
+      return;
     }
-  }
 
-  setupButton.addEventListener("click", () => {
-    setupStreams();
+    // 選択肢生成
+    streamSelect.innerHTML = '<option value="">-- セットを選択してください --</option>';
+    playableSets.forEach((item, i) => {
+      const vOk = videoResults[item.video] ? "◯" : "×";
+      const aOk = audioResults[item.audio] ? "◯" : "×";
+      const label = `セット ${i+1} — 映像: ${vOk} 音声: ${aOk}`;
+      const opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = label;
+      streamSelect.appendChild(opt);
+    });
+    streamSelect.disabled = false;
+    playButton.disabled = false;
+    statusMsg.textContent = foundPair ? `両方OKのペアを検出しました。セットを選択してください。` : `片方だけOKのセットも含みます。セットを選択してください。`;
   });
 
+  // 再生処理
   playButton.addEventListener("click", () => {
-    clearStatus();
-    const selectedIndex = streamSelect.value;
-    if (selectedIndex === "") {
-      setStatus("再生するセットを選んでください。");
-      return;
-    }
-    // playableStreams内から選択
-    const selected = playableStreams.find(s => s.index == selectedIndex);
-    if (!selected) {
-      setStatus("選択したセットは再生可能リストにありません。");
+    statusMsg.textContent = "";
+    playingInfo.textContent = "";
+
+    const idx = streamSelect.value;
+    if (idx === "") {
+      statusMsg.textContent = "再生するセットを選んでください。";
       return;
     }
 
-    video.src = selected.video;
-    audio.src = selected.audio;
+    let parsed;
+    try {
+      parsed = JSON.parse(jsonInput.value.trim());
+    } catch {
+      statusMsg.textContent = "JSONが無効です。";
+      return;
+    }
+    const item = parsed[idx];
+    if (!item) {
+      statusMsg.textContent = "選択セットが見つかりません。";
+      return;
+    }
+
+    video.src = item.video;
+    audio.src = item.audio;
 
     video.load();
     audio.load();
 
     video.play().catch(() => {
-      setStatus("動画の再生に失敗しました。");
+      statusMsg.textContent = "動画の再生に失敗しました。";
     });
     audio.play().catch(() => {
-      setStatus("音声の再生に失敗しました。");
+      statusMsg.textContent = "音声の再生に失敗しました。";
     });
 
-    playingInfo.textContent = `再生中: セット ${parseInt(selectedIndex, 10) + 1}`;
+    playingInfo.textContent = `再生中: セット ${parseInt(idx, 10) + 1}`;
   });
 
+  // 同期制御
   video.addEventListener('play', () => {
     if (audio.paused) audio.play();
   });
@@ -256,7 +283,7 @@
       audio.currentTime = video.currentTime;
     }
   }, 500);
-
 </script>
+
 </body>
 </html>
