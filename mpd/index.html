@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>MPD Generator</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 2em;
+    }
+    textarea {
+      width: 100%;
+      height: 300px;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 1em;
+      white-space: pre-wrap;
+    }
+    button {
+      margin-top: 1em;
+      padding: 0.5em 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>MPD Generator from JSON</h1>
+
+  <p>以下にJSONを貼り付けて、「生成」ボタンを押してください。</p>
+  <textarea id="jsonInput" placeholder="ここに JSON を入力..."></textarea><br>
+  <button id="generateBtn">MPDを生成</button>
+  <button id="downloadBtn" disabled>MPDをダウンロード</button>
+
+  <h2>生成された MPD:</h2>
+  <pre id="mpdOutput"></pre>
+
+  <script>
+    function toISODuration(seconds) {
+      return `PT${seconds}s`;
+    }
+
+    function parseResolution(res) {
+      const [w, h] = res.split("x").map(Number);
+      return { width: w, height: h };
+    }
+
+    function generateMPD(pairs) {
+      const maxDuration = Math.max(...pairs.map(p => Math.max(p.videoInfo.duration, p.audioInfo.duration)));
+      const mpdDuration = toISODuration(maxDuration);
+
+      const reps = pairs.map(pair => {
+        const v = pair.videoInfo;
+        const a = pair.audioInfo;
+        const { width, height } = parseResolution(v.resolution);
+        return `
+    <AdaptationSet mimeType="video/mp4" contentType="video">
+      <Representation id="${v.representationId}" bandwidth="${v.bandwidth}" codecs="${v.codecs}" width="${width}" height="${height}">
+        <BaseURL>${pair.video}</BaseURL>
+        <SegmentBase initialization="${v.segmentInfo.initialization}" indexRange="${v.segmentInfo.media}" />
+      </Representation>
+    </AdaptationSet>
+    <AdaptationSet mimeType="audio/mp4" contentType="audio">
+      <Representation id="${a.representationId}" bandwidth="${a.bandwidth}" codecs="${a.codecs}" audioSamplingRate="${a.audioSamplingRate}">
+        <BaseURL>${pair.audio}</BaseURL>
+        <SegmentBase initialization="${a.segmentInfo.initialization}" indexRange="${a.segmentInfo.media}" />
+      </Representation>
+    </AdaptationSet>`;
+      }).join("\n");
+
+      return `<?xml version="1.0" encoding="UTF-8"?>
+<MPD xmlns="urn:mpeg:dash:schema:mpd:2011"
+     profiles="urn:mpeg:dash:profile:isoff-main:2011"
+     type="static"
+     minBufferTime="PT1.5S"
+     mediaPresentationDuration="${mpdDuration}">
+  <Period>
+${reps}
+  </Period>
+</MPD>`;
+    }
+
+    document.getElementById("generateBtn").addEventListener("click", () => {
+      const input = document.getElementById("jsonInput").value;
+      const output = document.getElementById("mpdOutput");
+      const downloadBtn = document.getElementById("downloadBtn");
+      try {
+        const data = JSON.parse(input);
+        const mpd = generateMPD(data);
+        output.textContent = mpd;
+        downloadBtn.disabled = false;
+        downloadBtn.onclick = () => {
+          const blob = new Blob([mpd], { type: "application/xml" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "output.mpd";
+          a.click();
+          URL.revokeObjectURL(url);
+        };
+      } catch (e) {
+        output.textContent = "⚠️ JSONの解析に失敗しました: " + e.message;
+        downloadBtn.disabled = true;
+      }
+    });
+  </script>
+</body>
+</html>
