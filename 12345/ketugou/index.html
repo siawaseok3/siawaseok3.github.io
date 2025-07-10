@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>映像＋音声別ファイル チャンク分割＆結合サンプル</title>
+  <style>
+    body { font-family: sans-serif; max-width: 700px; margin: 2em auto; }
+    input, button { margin-bottom: 1em; display: block; }
+    video { max-width: 100%; }
+    #log { white-space: pre-wrap; background: #eee; padding: 1em; height: 150px; overflow-y: auto; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <h1>映像ファイルと音声ファイルのチャンク分割＆結合</h1>
+  <label>映像ファイル（映像のみ）を選択
+    <input type="file" id="videoInput" accept="video/*" />
+  </label>
+  <label>音声ファイルを選択
+    <input type="file" id="audioInput" accept="audio/*" />
+  </label>
+  <button id="startBtn" disabled>処理開始</button>
+  <p id="status">ファイルを選択してください。</p>
+  <div id="log"></div>
+  <h2>結合結果プレビュー</h2>
+  <video id="resultVideo" controls></video>
+
+  <script type="module">
+    import { createFFmpeg, fetchFile } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.8/dist/ffmpeg.min.js';
+
+    const ffmpeg = createFFmpeg({ log: false });
+    const videoInput = document.getElementById('videoInput');
+    const audioInput = document.getElementById('audioInput');
+    const startBtn = document.getElementById('startBtn');
+    const status = document.getElementById('status');
+    const log = document.getElementById('log');
+    const resultVideo = document.getElementById('resultVideo');
+
+    // ログ追記関数
+    function appendLog(msg) {
+      log.textContent += msg + '\n';
+      log.scrollTop = log.scrollHeight;
+    }
+
+    // 状態更新
+    function setStatus(msg) {
+      status.textContent = msg;
+      appendLog(msg);
+    }
+
+    // ファイルが両方選択されたらボタン有効化
+    function checkFiles() {
+      startBtn.disabled = !(videoInput.files.length > 0 && audioInput.files.length > 0);
+    }
+    videoInput.addEventListener('change', checkFiles);
+    audioInput.addEventListener('change', checkFiles);
+
+    // チャンク長秒（ここは5秒固定）
+    const CHUNK_DURATION = 5;
+
+    startBtn.addEventListener('click', async () => {
+      setStatus('ffmpegをロードしています...');
+      try {
+        if (!ffmpeg.isLoaded()) await ffmpeg.load();
+      } catch (e) {
+        setStatus('ffmpegロード失敗: ' + e.message);
+        return;
+      }
+
+      // ファイル読み込み
+      const videoFile = videoInput.files[0];
+      const audioFile = audioInput.files[0];
+      appendLog(`映像ファイル: ${videoFile.name}, サイズ: ${(videoFile.size / 1024 / 1024).toFixed(2)}MB`);
+      appendLog(`音声ファイル: ${audioFile.name}, サイズ: ${(audioFile.size / 1024 / 1024).toFixed(2)}MB`);
+
+      try {
+        setStatus('ファイルをメモリに書き込んでいます...');
+        ffmpeg.FS('writeFile', 'input_video.mp4', await fetchFile(videoFile));
+        ffmpeg.FS('writeFile', 'input_audio.m4a', await fetchFile(audioFile));
+      } catch (e) {
+        setStatus('ファイル読み込み失敗: ' + e.message);
+        return;
+      }
+
+      // 動画長さ取得（秒）※映像ファイルから
+      setStatus('動画長さを取得中...');
+      let durationSec = 0;
+      try {
+        // ffprobeの代わりにffmpegでdurationを抽出
+        // ログからdurationを探す方法（完璧とは言えないが代替）
+        let ffmpegOutput = '';
+        ffmpeg.setLogger(({ type, message }) => {
+          if (type === 'info' || type === 'fferr') {
+            ffmpegOutput += message + '\n';
+          }
+        });
+
+        await ffmpeg.run('-i', 'input_video.mp4');
+        // duration: 00:00:12.34 のような文字列を抽出
+        const durMatch = ffmpegOutput.match(/Duration: (\d+):(\d+):(\d+\.\d+)/);
+        if (durMatch) {
+          const h = parseInt(durMatch[1]);
+          const m = parseInt(durMatch[2]);
+          const s = parseFloat(durMatch[3]);
+          durationSec = h * 3600 + m * 60 + s;
+          appendLog(`動画長さ: ${durationSec.toFixed(2)} 秒`);
+        } else {
+          throw new Error('動画の長さ取得に失敗しました');
+        }
+      } catch (e) {
+        setStatus('動画長さ取得失敗: ' + e.message);
+        return;
+      }
+
+      // チャンク数算出
+      const chunkCount = Math.ceil(durationSec / CHUNK_DURATION);
+      appendLog(`チャンク数: ${chunkCount}（1チャンクあたり${CHUNK_DURATION}秒）`);
+
+      // チャンク分割と連結処理
+      try {
+        // 1. 映像チャンク分割（映像ストリームのみ）
+        setStatus('映像チャンク分割中...');
+        for (let i = 0; i < chunkCount; i++) {
+          const start = (i * CHUNK_DURATION).toFixed(2);
+          const outName = `v_chunk_${i}.mp4`;
+          await ffmpeg.run(
+            '-i', 'input_video.mp4',
+            '-ss', start,
+            '-t', CHUNK_DURATION.toString(),
+            '-c:v', 'copy',
+            '-an', // 音声なし
+            outName
+          );
+          appendLog(`映像チャンク ${i + 1}/${chunkCount} 作成完了: ${outName}`);
+        }
+
+        // concat用リスト作成（映像）
+        const vListContent = Array(chunkCount).fill(0).map((_, i) => `file v_chunk_${i}.mp4`).join('\n');
+        ffmpeg.FS('writeFile', 'v_concat_list.txt', vListContent);
+
+        // 2. 音声チャンク分割（音声ストリームのみ）
+        setStatus('音声チャンク分割中...');
+        for (let i = 0; i < chunkCount; i++) {
+          const start = (i * CHUNK_DURATION).toFixed(2);
+          const outName = `a_chunk_${i}.m4a`;
+          await ffmpeg.run(
+            '-i', 'input_audio.m4a',
+            '-ss', start,
+            '-t', CHUNK_DURATION.toString(),
+            '-c:a', 'copy',
+            '-vn', // 映像なし
+            outName
+          );
+          appendLog(`音声チャンク ${i + 1}/${chunkCount} 作成完了: ${outName}`);
+        }
+
+        // concat用リスト作成（音声）
+        const aListContent = Array(chunkCount).fill(0).map((_, i) => `file a_chunk_${i}.m4a`).join('\n');
+        ffmpeg.FS('writeFile', 'a_concat_list.txt', aListContent);
+
+        // 3. 映像チャンク連結
+        setStatus('映像チャンク連結中...');
+        await ffmpeg.run(
+          '-f', 'concat',
+          '-safe', '0',
+          '-i', 'v_concat_list.txt',
+          '-c', 'copy',
+          'video_merged.mp4'
+        );
+        appendLog('映像チャンク連結完了: video_merged.mp4');
+
+        // 4. 音声チャンク連結
+        setStatus('音声チャンク連結中...');
+        await ffmpeg.run(
+          '-f', 'concat',
+          '-safe', '0',
+          '-i', 'a_concat_list.txt',
+          '-c', 'copy',
+          'audio_merged.m4a'
+        );
+        appendLog('音声チャンク連結完了: audio_merged.m4a');
+
+        // 5. 映像＋音声合体
+        setStatus('映像と音声を合体中...');
+        await ffmpeg.run(
+          '-i', 'video_merged.mp4',
+          '-i', 'audio_merged.m4a',
+          '-c:v', 'copy',
+          '-c:a', 'aac',
+          '-map', '0:v:0',
+          '-map', '1:a:0',
+          'output_final.mp4'
+        );
+        appendLog('最終ファイル作成完了: output_final.mp4');
+
+        // ファイル読み込み＆表示
+        const outputData = ffmpeg.FS('readFile', 'output_final.mp4');
+        const outputBlob = new Blob([outputData.buffer], { type: 'video/mp4' });
+        const outputUrl = URL.createObjectURL(outputBlob);
+
+        resultVideo.src = outputUrl;
+        setStatus('処理完了！動画を下で再生できます。');
+      } catch (e) {
+        setStatus('処理中にエラーが発生しました: ' + e.message);
+        appendLog(e.stack);
+      }
+    });
+  </script>
+</body>
+</html>
