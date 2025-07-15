@@ -2,10 +2,10 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>映像・音声同期再生（改良版）</title>
+  <title>映像・音声同期再生（ジャンプに1秒クールダウン）</title>
 </head>
 <body>
-  <h2>映像と音声を同時再生（初回の乱れを減らしズレ大きい時は微調整）</h2>
+  <h2>映像と音声を同時再生（音声ジャンプに1秒クールダウン付き）</h2>
   <video id="video" width="640" controls></video>
   <audio id="audio" controls></audio>
 
@@ -13,28 +13,38 @@
     const video = document.getElementById('video');
     const audio = document.getElementById('audio');
 
-    // ここに映像・音声のURLを入れてください
     video.src = "https://rr2---sn-q4flrnl7.googlevideo.com/videoplayback?expire=1752613368&ei=mG12aLW9LLvL_tcP5-PQuQM&ip=72.46.85.219&id=o-AMVGwEWGuSpr-gMfOazVeZyMmJoGG9OPXeuezHwsUOZq&itag=313&aitags=133,134,135,136,137,160,242,243,244,247,248,271,278,313,394,395,396,397,398,399,400,401&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ==&met=1752591768,&mh=7y&mm=31,29&mn=sn-q4flrnl7,sn-q4fl6n6d&ms=au,rdu&mv=u&mvi=2&pl=25&rms=au,au&bui=AY1jyLPFrMNVnSnKOcRk5f_YFoZ9TeCfxHa0msG0fSNGH12_QU-XdZY1-G118tFDaOQ49mHQgeGZR61y&spc=l3OVKUGN3hWhdllfcImEekHbBSg3SWn8VuOHNYgVzeTGKXcc1UcP_faEGcOc_Ca8Y8M&vprv=1&svpuc=1&mime=video/webm&ns=x844T0n10PjMfKgvsp09FegQ&rqh=1&gir=yes&clen=6974012404&dur=3799.596&lmt=1752442814426182&mt=1752589977&fvip=3&keepalive=yes&c=WEB_EMBEDDED_PLAYER&sefc=1&txp=4532534&n=QjPlGlmUQ9RycA&sparams=expire,ei,ip,id,aitags,source,requiressl,xpc,bui,spc,vprv,svpuc,mime,ns,rqh,gir,clen,dur,lmt&sig=AJfQdSswRAIgHsQtrxuCQC86p9NTX8EyemOnv8iI3XCw2y-leZ9fgLQCIAPKr0UY_3MOHe39QMsQUGWi8_IqRo4sQSngWph_iw_5&lsparams=met,mh,mm,mn,ms,mv,mvi,pl,rms&lsig=APaTxxMwRQIgBxtaRAETg7MvO9biHc9CGALHe52WYUiSKcnRgCADknUCIQDQELun-g5GnnKgSuJl6rA4pcTyp2d3N78Ny2J83-XI0Q=="; // 映像URL（短縮推奨）
     audio.src = "https://rr2---sn-8pjuv35p-oguk.googlevideo.com/videoplayback?expire=1752613368&ei=mG12aLW9LLvL_tcP5-PQuQM&ip=72.46.85.219&id=o-AMVGwEWGuSpr-gMfOazVeZyMmJoGG9OPXeuezHwsUOZq&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&rms=au%2Cau&bui=AY1jyLPFrMNVnSnKOcRk5f_YFoZ9TeCfxHa0msG0fSNGH12_QU-XdZY1-G118tFDaOQ49mHQgeGZR61y&spc=l3OVKUGN3hWhdllfcImEekHbBSg3SWn8VuOHNYgVzeTGKXcc1UcP_faEGcOc_Ca8Y8M&vprv=1&svpuc=1&xtags=drc%3D1&mime=audio%2Fwebm&ns=x844T0n10PjMfKgvsp09FegQ&rqh=1&gir=yes&clen=64258744&dur=3799.621&lmt=1752449895942836&keepalive=yes&c=WEB_EMBEDDED_PLAYER&sefc=1&txp=4532534&n=QjPlGlmUQ9RycA&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cxtags%2Cmime%2Cns%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJfQdSswRAIgXpS67V8W7nCWD0XvIyd9Ev_vf3AoXh5AHUygHxAiND4CIHz2SToXzvbzmbOWzdJ9KNVrWdQP-liEy2AER5-_vZBs&redirect_counter=1&rm=sn-q4fell7l&rrc=104&fexp=24350590,24350737,24350827,24350961,24351316,24351318,24351528,24351907,24352220,24352258,24352262,24352297,24352299,24352334,24352336,24352402,24352404,24352452,24352454,24352457,24352460,24352466,24352517,24352519,24352535,24352537,24352558,24352568,24352574&req_id=a6c8300c403ba3ee&cms_redirect=yes&ipbypass=yes&met=1752592254,&mh=7y&mip=182.20.81.147&mm=31&mn=sn-8pjuv35p-oguk&ms=au&mt=1752591699&mv=m&mvi=2&pl=17&lsparams=ipbypass,met,mh,mip,mm,mn,ms,mv,mvi,pl,rms&lsig=APaTxxMwRQIgblq1u3Av9lwqQcyMJgy9z7rSAp_IlGUzriSe1XgJibICIQCu_WaC1DA2lz8Yx2V12uZ0drJPhSRY1rOfBBaI9e-dEg%3D%3D"; // 音声URL（短縮推奨）
 
+
     let syncTimeout = null;
     let isInitialSyncDone = false;
+    let lastJumpTime = 0; // 最後にジャンプしたタイムスタンプ（ms）
 
-    // 再生開始時
+    // ジャンプ許可チェック（1秒クールダウン）
+    function canJump() {
+      const now = performance.now();
+      if (now - lastJumpTime > 1000) {
+        lastJumpTime = now;
+        return true;
+      }
+      return false;
+    }
+
     video.onplay = () => {
       audio.play();
 
-      // 初回の再生開始時の乱れを減らすため1秒後の同期は1回だけ
       if (!isInitialSyncDone) {
         if (syncTimeout) clearTimeout(syncTimeout);
         syncTimeout = setTimeout(() => {
-          audio.currentTime = video.currentTime;
-          isInitialSyncDone = true;
+          if (canJump()) {
+            audio.currentTime = video.currentTime;
+            isInitialSyncDone = true;
+          }
         }, 1000);
       }
     };
 
-    // 一時停止時
     video.onpause = () => {
       audio.pause();
       if (syncTimeout) {
@@ -43,20 +53,21 @@
       }
     };
 
-    // シーク時は即座に同期
     video.onseeking = () => {
-      audio.currentTime = video.currentTime;
+      if (canJump()) {
+        audio.currentTime = video.currentTime;
+      }
     };
 
-    // 滑らかなズレ補正＆大きなズレの早送り補正
     video.ontimeupdate = () => {
       const diff = video.currentTime - audio.currentTime;
 
       if (Math.abs(diff) > 1.5) {
-        // 1.5秒以上のズレがあれば、音声を映像の10ms（0.01秒）先に合わせる
-        audio.currentTime = Math.max(0, video.currentTime - 0.01);
+        if (canJump()) {
+          audio.currentTime = Math.max(0, video.currentTime - 0.01);
+        }
       } else if (Math.abs(diff) > 0.3) {
-        // 0.3秒以上の小さなズレは徐々に補正
+        // 補間はジャンプじゃないのでクールダウン不要
         audio.currentTime += diff * 0.1;
       }
     };
