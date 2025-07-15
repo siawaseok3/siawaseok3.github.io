@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sync HLS Video & Audio</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 2rem;
+    }
+    video {
+      width: 80%;
+      max-width: 800px;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <video id="video" controls></video>
+  <audio id="audio"></audio>
+  <button id="playBtn">Play Both Streams</button>
+
+  <script>
+    const video = document.getElementById('video');
+    const audio = document.getElementById('audio');
+    const playBtn = document.getElementById('playBtn');
+
+    // Replace these with your HLS/DASH stream URLs:
+    const videoStreamUrl = 'https://rr2---sn-q4flrnl7.googlevideo.com/videoplayback?expire=1752613368&ei=mG12aLW9LLvL_tcP5-PQuQM&ip=72.46.85.219&id=o-AMVGwEWGuSpr-gMfOazVeZyMmJoGG9OPXeuezHwsUOZq&itag=313&aitags=133,134,135,136,137,160,242,243,244,247,248,271,278,313,394,395,396,397,398,399,400,401&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ==&met=1752591768,&mh=7y&mm=31,29&mn=sn-q4flrnl7,sn-q4fl6n6d&ms=au,rdu&mv=u&mvi=2&pl=25&rms=au,au&bui=AY1jyLPFrMNVnSnKOcRk5f_YFoZ9TeCfxHa0msG0fSNGH12_QU-XdZY1-G118tFDaOQ49mHQgeGZR61y&spc=l3OVKUGN3hWhdllfcImEekHbBSg3SWn8VuOHNYgVzeTGKXcc1UcP_faEGcOc_Ca8Y8M&vprv=1&svpuc=1&mime=video/webm&ns=x844T0n10PjMfKgvsp09FegQ&rqh=1&gir=yes&clen=6974012404&dur=3799.596&lmt=1752442814426182&mt=1752589977&fvip=3&keepalive=yes&c=WEB_EMBEDDED_PLAYER&sefc=1&txp=4532534&n=QjPlGlmUQ9RycA&sparams=expire,ei,ip,id,aitags,source,requiressl,xpc,bui,spc,vprv,svpuc,mime,ns,rqh,gir,clen,dur,lmt&sig=AJfQdSswRAIgHsQtrxuCQC86p9NTX8EyemOnv8iI3XCw2y-leZ9fgLQCIAPKr0UY_3MOHe39QMsQUGWi8_IqRo4sQSngWph_iw_5&lsparams=met,mh,mm,mn,ms,mv,mvi,pl,rms&lsig=APaTxxMwRQIgBxtaRAETg7MvO9biHc9CGALHe52WYUiSKcnRgCADknUCIQDQELun-g5GnnKgSuJl6rA4pcTyp2d3N78Ny2J83-XI0Q==';
+    const audioStreamUrl = 'https://rr2---sn-q4flrnl7.googlevideo.com/videoplayback?expire=1752613368&ei=mG12aLW9LLvL_tcP5-PQuQM&ip=72.46.85.219&id=o-AMVGwEWGuSpr-gMfOazVeZyMmJoGG9OPXeuezHwsUOZq&itag=313&aitags=133,134,135,136,137,160,242,243,244,247,248,271,278,313,394,395,396,397,398,399,400,401&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ==&met=1752591768,&mh=7y&mm=31,29&mn=sn-q4flrnl7,sn-q4fl6n6d&ms=au,rdu&mv=u&mvi=2&pl=25&rms=au,au&bui=AY1jyLPFrMNVnSnKOcRk5f_YFoZ9TeCfxHa0msG0fSNGH12_QU-XdZY1-G118tFDaOQ49mHQgeGZR61y&spc=l3OVKUGN3hWhdllfcImEekHbBSg3SWn8VuOHNYgVzeTGKXcc1UcP_faEGcOc_Ca8Y8M&vprv=1&svpuc=1&mime=video/webm&ns=x844T0n10PjMfKgvsp09FegQ&rqh=1&gir=yes&clen=6974012404&dur=3799.596&lmt=1752442814426182&mt=1752589977&fvip=3&keepalive=yes&c=WEB_EMBEDDED_PLAYER&sefc=1&txp=4532534&n=QjPlGlmUQ9RycA&sparams=expire,ei,ip,id,aitags,source,requiressl,xpc,bui,spc,vprv,svpuc,mime,ns,rqh,gir,clen,dur,lmt&sig=AJfQdSswRAIgHsQtrxuCQC86p9NTX8EyemOnv8iI3XCw2y-leZ9fgLQCIAPKr0UY_3MOHe39QMsQUGWi8_IqRo4sQSngWph_iw_5&lsparams=met,mh,mm,mn,ms,mv,mvi,pl,rms&lsig=APaTxxMwRQIgBxtaRAETg7MvO9biHc9CGALHe52WYUiSKcnRgCADknUCIQDQELun-g5GnnKgSuJl6rA4pcTyp2d3N78Ny2J83-XI0Q==';
+
+    // Initialize Hls.js for video
+    if (Hls.isSupported()) {
+      const hlsV = new Hls();
+      hlsV.loadSource(videoStreamUrl);
+      hlsV.attachMedia(video);
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = videoStreamUrl;
+    }
+
+    // Initialize Hls.js for audio
+    if (Hls.isSupported()) {
+      const hlsA = new Hls();
+      hlsA.loadSource(audioStreamUrl);
+      hlsA.attachMedia(audio);
+    } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+      audio.src = audioStreamUrl;
+    }
+
+    // Play both on button click
+    playBtn.addEventListener('click', () => {
+      // reset to start
+      video.currentTime = audio.currentTime = 0;
+      Promise.all([ video.play(), audio.play() ])
+        .catch(err => console.error('Play error:', err));
+    });
+
+    // Keep them in sync
+    video.addEventListener('timeupdate', () => {
+      const drift = video.currentTime - audio.currentTime;
+      // if streams drift by >300ms, snap audio
+      if (Math.abs(drift) > 0.3) {
+        audio.currentTime = video.currentTime;
+      }
+    });
+
+    // Seek handling
+    video.addEventListener('seeked', () => {
+      audio.currentTime = video.currentTime;
+    });
+
+    // Pause both if one pauses
+    video.addEventListener('pause', () => audio.pause());
+    audio.addEventListener('pause', () => video.pause());
+  </script>
+</body>
+</html>
