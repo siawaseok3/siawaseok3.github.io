@@ -55,7 +55,7 @@
         audio.playbackRate = 1.0;
       } else if (abs < 0.1) {
         // ±50〜100ms：ゆっくり補正
-        audio.playbackRate = diff > 0 ? 1.02 : 0.99;
+        audio.playbackRate = diff > 0 ? 1.02 : 0.98;
       } else if (abs < 1.5) {
         // ±100ms〜1.5秒：しっかり補正
         audio.playbackRate = diff > 0 ? 1.03 : 0.97;
