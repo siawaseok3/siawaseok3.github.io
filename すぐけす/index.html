@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>映像と音声の精密同期（±10ms静観＋強化補正）</title>
+  <meta charset="UTF-8" />
+  <title>映像と音声の同期再生（バッファリング対応済み）</title>
 </head>
 <body>
-  <h2>🎧 映像と音声の同期再生（10ms単位で調整）</h2>
+  <h2>映像と音声の同期再生（バッファリング監視＋差分補正）</h2>
   <video id="video" width="640" controls></video>
   <audio id="audio" controls></audio>
   <p>🎯 差分（video - audio）：<span id="diffDisplay">0</span> ms</p>
@@ -14,15 +14,22 @@
     const video = document.getElementById("video");
     const audio = document.getElementById("audio");
     const diffDisplay = document.getElementById("diffDisplay");
+    
+    // ページ読み込み時にクールダウンCookieをfalseに初期化
+    window.addEventListener('load', () => {
+      setCookie(cooldownCookieName, "false", 5);
+    });
 
-    // 動画・音声URL（適宜差し替え）
+
+    // 動画・音声のURL（適宜差し替え）
     video.src = "https://rr2---sn-q4flrnl7.googlevideo.com/videoplayback?expire=1752613368&ei=mG12aLW9LLvL_tcP5-PQuQM&ip=72.46.85.219&id=o-AMVGwEWGuSpr-gMfOazVeZyMmJoGG9OPXeuezHwsUOZq&itag=313&aitags=133,134,135,136,137,160,242,243,244,247,248,271,278,313,394,395,396,397,398,399,400,401&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ==&met=1752591768,&mh=7y&mm=31,29&mn=sn-q4flrnl7,sn-q4fl6n6d&ms=au,rdu&mv=u&mvi=2&pl=25&rms=au,au&bui=AY1jyLPFrMNVnSnKOcRk5f_YFoZ9TeCfxHa0msG0fSNGH12_QU-XdZY1-G118tFDaOQ49mHQgeGZR61y&spc=l3OVKUGN3hWhdllfcImEekHbBSg3SWn8VuOHNYgVzeTGKXcc1UcP_faEGcOc_Ca8Y8M&vprv=1&svpuc=1&mime=video/webm&ns=x844T0n10PjMfKgvsp09FegQ&rqh=1&gir=yes&clen=6974012404&dur=3799.596&lmt=1752442814426182&mt=1752589977&fvip=3&keepalive=yes&c=WEB_EMBEDDED_PLAYER&sefc=1&txp=4532534&n=QjPlGlmUQ9RycA&sparams=expire,ei,ip,id,aitags,source,requiressl,xpc,bui,spc,vprv,svpuc,mime,ns,rqh,gir,clen,dur,lmt&sig=AJfQdSswRAIgHsQtrxuCQC86p9NTX8EyemOnv8iI3XCw2y-leZ9fgLQCIAPKr0UY_3MOHe39QMsQUGWi8_IqRo4sQSngWph_iw_5&lsparams=met,mh,mm,mn,ms,mv,mvi,pl,rms&lsig=APaTxxMwRQIgBxtaRAETg7MvO9biHc9CGALHe52WYUiSKcnRgCADknUCIQDQELun-g5GnnKgSuJl6rA4pcTyp2d3N78Ny2J83-XI0Q=="; // 映像URL（短縮推奨）
     audio.src = "https://rr2---sn-8pjuv35p-oguk.googlevideo.com/videoplayback?expire=1752613368&ei=mG12aLW9LLvL_tcP5-PQuQM&ip=72.46.85.219&id=o-AMVGwEWGuSpr-gMfOazVeZyMmJoGG9OPXeuezHwsUOZq&itag=251&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&rms=au%2Cau&bui=AY1jyLPFrMNVnSnKOcRk5f_YFoZ9TeCfxHa0msG0fSNGH12_QU-XdZY1-G118tFDaOQ49mHQgeGZR61y&spc=l3OVKUGN3hWhdllfcImEekHbBSg3SWn8VuOHNYgVzeTGKXcc1UcP_faEGcOc_Ca8Y8M&vprv=1&svpuc=1&xtags=drc%3D1&mime=audio%2Fwebm&ns=x844T0n10PjMfKgvsp09FegQ&rqh=1&gir=yes&clen=64258744&dur=3799.621&lmt=1752449895942836&keepalive=yes&c=WEB_EMBEDDED_PLAYER&sefc=1&txp=4532534&n=QjPlGlmUQ9RycA&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cxtags%2Cmime%2Cns%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJfQdSswRAIgXpS67V8W7nCWD0XvIyd9Ev_vf3AoXh5AHUygHxAiND4CIHz2SToXzvbzmbOWzdJ9KNVrWdQP-liEy2AER5-_vZBs&redirect_counter=1&rm=sn-q4fell7l&rrc=104&fexp=24350590,24350737,24350827,24350961,24351316,24351318,24351528,24351907,24352220,24352258,24352262,24352297,24352299,24352334,24352336,24352402,24352404,24352452,24352454,24352457,24352460,24352466,24352517,24352519,24352535,24352537,24352558,24352568,24352574&req_id=a6c8300c403ba3ee&cms_redirect=yes&ipbypass=yes&met=1752592254,&mh=7y&mip=182.20.81.147&mm=31&mn=sn-8pjuv35p-oguk&ms=au&mt=1752591699&mv=m&mvi=2&pl=17&lsparams=ipbypass,met,mh,mip,mm,mn,ms,mv,mvi,pl,rms&lsig=APaTxxMwRQIgblq1u3Av9lwqQcyMJgy9z7rSAp_IlGUzriSe1XgJibICIQCu_WaC1DA2lz8Yx2V12uZ0drJPhSRY1rOfBBaI9e-dEg%3D%3D"; // 音声URL（短縮推奨）
 
     const cooldownCookieName = "audioJumpCooldown";
     let isStartupJumpDone = false;
+    let isBuffering = false;
 
-    // Cookie 操作
+    // Cookie操作関数
     function setCookie(name, value, seconds) {
       const expires = new Date(Date.now() + seconds * 1000).toUTCString();
       document.cookie = `${name}=${value}; expires=${expires}; path=/`;
@@ -53,24 +60,37 @@
       const abs = Math.abs(diff);
 
       if (abs < 0.01) {
-        // ±10ms以内：静観
         audio.playbackRate = 1.0;
       } else if (abs < 0.1) {
-        // ±10〜100ms：軽い補正
         audio.playbackRate = diff > 0 ? 1.02 : 0.98;
       } else if (abs < 1.5) {
-        // ±100〜1500ms：中程度補正
         audio.playbackRate = diff > 0 ? 1.06 : 0.94;
       } else if (abs < 2.0) {
-        // ±1.5〜2秒：強め補正
         audio.playbackRate = diff > 0 ? 1.1 : 0.9;
       } else {
-        // ±2秒以上：ジャンプ補正
         audio.playbackRate = 1.0;
         jumpAudioToVideo();
       }
     }
 
+    // バッファリング監視＆音声制御
+    video.addEventListener("waiting", () => {
+      isBuffering = true;
+      audio.pause();
+    });
+
+    video.addEventListener("playing", () => {
+      if (isBuffering) {
+        isBuffering = false;
+        if (!video.paused) audio.play();
+      }
+    });
+
+    video.addEventListener("pause", () => {
+      audio.pause();
+    });
+
+    // 再生開始時処理
     video.onplay = () => {
       audio.play();
 
@@ -78,18 +98,16 @@
         setTimeout(() => {
           audio.currentTime = Math.max(0, video.currentTime - 0.1);
           isStartupJumpDone = true;
-        }, 1000);
+        }, 100);
       }
     };
 
-    video.onpause = () => {
-      audio.pause();
-    };
-
+    // シーク時ジャンプ補正
     video.onseeking = () => {
       jumpAudioToVideo();
     };
 
+    // 差分チェック＆再生速度補正
     video.ontimeupdate = () => {
       const diff = video.currentTime - audio.currentTime;
       diffDisplay.textContent = `${(diff * 1000).toFixed(0)} ms`;
