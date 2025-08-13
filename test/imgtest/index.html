@@ -8,11 +8,17 @@
   </head>
   <body>
 <script>
-fetch('https://script.google.com/macros/s/AKfycbznlQ6HvtGUZ0l9jnUHqPPoI3r-qNGeifgBi8lwsE_DwIU-ppyaJCqJG7FUyHflkgsr/exec?id=5Fg9oZk-5uA')
-  .then(res => res.text())
-  .then(base64 => {
-    document.querySelector('#thumb').src = `data:image/jpeg;base64,${base64}`;
-  });
+const videoId = "5Fg9oZk-5uA"; // 取得したい動画ID
+const url = `https://script.google.com/macros/s/AKfycbxTB0u1IwFoApcEK578Do_n0zR4g0y2oGfZBumsnsOk5GCZz_0cbshNFFLO3Zx78WIsNw/exec?id=${videoId}`;
+
+fetch(url)
+  .then(res => res.blob())
+  .then(blob => {
+    const imgURL = URL.createObjectURL(blob);
+    document.querySelector('#thumb').src = imgURL;
+  })
+  .catch(err => console.error("画像取得エラー:", err));
+
 </script>
 
 <img id="thumb">
