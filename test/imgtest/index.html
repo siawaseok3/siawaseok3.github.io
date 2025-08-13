@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+<script>
+fetch('https://script.google.com/macros/s/AKfycbxcp1Zj90F75lmG2TPC7kBklL0Xub6MNbBhewVx472F5RHYX6QYA5IhHLJ308zZsIkJ/exec?id=5Fg9oZk-5uA')
+  .then(res => res.text())
+  .then(base64 => {
+    document.querySelector('#thumb').src = `data:image/jpeg;base64,${base64}`;
+  });
+</script>
+
+<img id="thumb">
+  </body>
+</html>
+
+
