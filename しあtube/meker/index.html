@@ -23,26 +23,14 @@
   <pre id="outputHtml"></pre>
 
   <script>
-    function replaceCss(html) {
-      return html.replace(
-        /<link([^>]+)href="\.\/?assets\/(index-[^"]+\.css)"([^>]*)>/g,
-        `<link$1href="https://cdn.jsdelivr.net/gh/ajgpw/youtube@main/client/dist/assets/$2"$3>`
-      );
-    }
-
-    function replaceJs(html) {
-      return html.replace(
-        /<script([^>]+)src="\.\/?assets\/(index-[^"]+\.js)"([^>]*)><\/script>/g,
-        `<script$1src="https://cdn.jsdelivr.net/gh/ajgpw/youtube@main/client/dist/assets/$2"$3></script>`
-      );
-    }
-
+    // まとめて置換
     function replaceAssets(html) {
       html = replaceCss(html);
       html = replaceJs(html);
       return html;
     }
 
+    // 変換ボタン
     document.getElementById("convertBtn").addEventListener("click", () => {
       const input = document.getElementById("inputHtml").value;
       if (!input) return alert("HTMLを入力してください。");
@@ -50,6 +38,7 @@
       document.getElementById("outputHtml").textContent = output;
     });
 
+    // コピー用ボタン
     document.getElementById("copyBtn").addEventListener("click", async () => {
       const output = document.getElementById("outputHtml").textContent;
       if (!output) return alert("まず変換してください。");
@@ -62,6 +51,22 @@
         alert("コピーに失敗しました。ブラウザの権限を確認してください。");
       }
     });
+
+    // CSS置換
+    function replaceCss(html) {
+      return html.replace(
+        /<link([^>]+)href="\.\/?assets\/(index-[^"]+\.css)"([^>]*)>/g,
+        `<link$1 href="https://cdn.jsdelivr.net/gh/ajgpw/youtube@main/client/dist/assets/$2"$3 />`
+      );
+    }
+
+    // JS置換
+    function replaceJs(html) {
+      return html.replace(
+        /<script([^>]+)src="\.\/?assets\/(index-[^"]+\.js)"([^>]*)><\/script>/g,
+        `<script$1 src="https://cdn.jsdelivr.net/gh/ajgpw/youtube@main/client/dist/assets/$2"$3></script>`
+      );
+    }
   </script>
 </body>
 </html>
