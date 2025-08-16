@@ -63,8 +63,8 @@
     // JS置換
     function replaceJs(html) {
       return html.replace(
-        /<script([^>]+)src="\.\/?assets\/(index-[^"]+\.js)"([^>]*)><\/script>/g,
-        `<script$1 src="https://cdn.jsdelivr.net/gh/ajgpw/youtube@main/client/dist/assets/$2"$3></script>`
+        /<script[^>]+src="\.\/?assets\/(index-[^"]+\.js)"[^>]*><\/script>/g,
+        (match, p1) => `<script src="https://cdn.jsdelivr.net/gh/ajgpw/youtube@main/client/dist/assets/${p1}"></script>`
       );
     }
   </script>
