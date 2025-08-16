@@ -23,17 +23,25 @@
   <pre id="outputHtml"></pre>
 
   <script>
-    // まとめて置換
     function replaceAssets(html) {
-      html = replaceCss(html);
-      html = replaceJs(html);
+      // CSSを置換
+      html = html.replace(
+        /<link([^>]+)href="\.\/*assets\/(index-[^"]+\.css)"([^>]*)>/g,
+        `<link$1href="https://cdn.jsdelivr.net/gh/ajgpw/youtube@main/client/dist/assets/$2"$3>`
+      );
+
+      // JSを置換
+      html = html.replace(
+        /<script([^>]+)src="\.\/*assets\/(index-[^"]+\.js)"([^>]*)><\/script>/g,
+        `<script$1src="https://cdn.jsdelivr.net/gh/ajgpw/youtube@main/client/dist/assets/$2"$3></scr` + `ipt>`
+      );
+
       return html;
     }
 
     // 変換ボタン
     document.getElementById("convertBtn").addEventListener("click", () => {
       const input = document.getElementById("inputHtml").value;
-      if (!input) return alert("HTMLを入力してください。");
       const output = replaceAssets(input);
       document.getElementById("outputHtml").textContent = output;
     });
@@ -51,22 +59,6 @@
         alert("コピーに失敗しました。ブラウザの権限を確認してください。");
       }
     });
-
-    // CSS置換
-    function replaceCss(html) {
-      return html.replace(
-        /<link([^>]+)href="\.\/?assets\/(index-[^"]+\.css)"([^>]*)>/g,
-        `<link$1 href="https://cdn.jsdelivr.net/gh/ajgpw/youtube@main/client/dist/assets/$2"$3 />`
-      );
-    }
-
-    // JS置換
-    function replaceJs(html) {
-      return html.replace(
-        /<script[^>]+src="\.\/?assets\/(index-[^"]+\.js)"[^>]*><\/script>/g,
-        (match, p1) => `<script src="https://cdn.jsdelivr.net/gh/ajgpw/youtube@main/client/dist/assets/${p1}"></script>`
-      );
-    }
   </script>
 </body>
 </html>
