@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>HTMLアセットURL置換ツール</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    textarea { width: 100%; height: 200px; }
+    pre { background: #f0f0f0; padding: 10px; white-space: pre-wrap; }
+    button { margin: 10px 0; padding: 5px 15px; }
+  </style>
+</head>
+<body>
+  <h1>HTML内のアセットをCDN URLに置換</h1>
+  <p>HTMLを下のテキストエリアにペーストしてください：</p>
+  <textarea id="inputHtml"></textarea>
+  <br>
+  <button id="convertBtn">変換</button>
+  <h2>変換後のHTML：</h2>
+  <pre id="outputHtml"></pre>
+
+  <script>
+    function replaceAssets(html) {
+      // CSSを置換
+      html = html.replace(
+        /<link([^>]+)href="\.\/*assets\/(index-[^"]+\.css)"([^>]*)>/,
+        `<link$1href="https://cdn.jsdelivr.net/gh/ajgpw/youtube@main/client/dist/assets/$2"$3>`
+      );
+
+      // JSを置換
+      html = html.replace(
+        /<script([^>]+)src="\.\/*assets\/(index-[^"]+\.js)"([^>]*)><\/script>/,
+        `<script$1src="https://cdn.jsdelivr.net/gh/ajgpw/youtube@main/client/dist/assets/$2"$3></script>`
+      );
+
+      return html;
+    }
+
+    document.getElementById("convertBtn").addEventListener("click", () => {
+      const input = document.getElementById("inputHtml").value;
+      const output = replaceAssets(input);
+      document.getElementById("outputHtml").textContent = output;
+    });
+  </script>
+</body>
+</html>
