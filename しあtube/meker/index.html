@@ -7,15 +7,18 @@
     body { font-family: sans-serif; padding: 20px; }
     textarea { width: 100%; height: 200px; }
     pre { background: #f0f0f0; padding: 10px; white-space: pre-wrap; }
-    button { margin: 10px 0; padding: 5px 15px; }
+    button { margin: 10px 5px 10px 0; padding: 5px 15px; }
   </style>
 </head>
 <body>
   <h1>HTML内のアセットをCDN URLに置換</h1>
+
   <p>HTMLを下のテキストエリアにペーストしてください：</p>
-  <textarea id="inputHtml"></textarea>
+  <textarea id="inputHtml" placeholder="ここにHTMLを貼り付け"></textarea>
   <br>
   <button id="convertBtn">変換</button>
+  <button id="copyBtn">コピー</button>
+
   <h2>変換後のHTML：</h2>
   <pre id="outputHtml"></pre>
 
@@ -23,23 +26,38 @@
     function replaceAssets(html) {
       // CSSを置換
       html = html.replace(
-        /<link([^>]+)href="\.\/*assets\/(index-[^"]+\.css)"([^>]*)>/,
+        /<link([^>]+)href="\.\/*assets\/(index-[^"]+\.css)"([^>]*)>/g,
         `<link$1href="https://cdn.jsdelivr.net/gh/ajgpw/youtube@main/client/dist/assets/$2"$3>`
       );
 
       // JSを置換
       html = html.replace(
-        /<script([^>]+)src="\.\/*assets\/(index-[^"]+\.js)"([^>]*)><\/script>/,
+        /<script([^>]+)src="\.\/*assets\/(index-[^"]+\.js)"([^>]*)><\/script>/g,
         `<script$1src="https://cdn.jsdelivr.net/gh/ajgpw/youtube@main/client/dist/assets/$2"$3></script>`
       );
 
       return html;
     }
 
+    // 変換ボタン
     document.getElementById("convertBtn").addEventListener("click", () => {
       const input = document.getElementById("inputHtml").value;
       const output = replaceAssets(input);
       document.getElementById("outputHtml").textContent = output;
+    });
+
+    // コピー用ボタン
+    document.getElementById("copyBtn").addEventListener("click", async () => {
+      const output = document.getElementById("outputHtml").textContent;
+      if (!output) return alert("まず変換してください。");
+
+      try {
+        await navigator.clipboard.writeText(output);
+        alert("コピーしました！");
+      } catch (err) {
+        console.error(err);
+        alert("コピーに失敗しました。ブラウザの権限を確認してください。");
+      }
     });
   </script>
 </body>
