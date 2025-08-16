@@ -23,30 +23,33 @@
   <pre id="outputHtml"></pre>
 
   <script>
-    function replaceAssets(html) {
-      // CSSを置換
-      html = html.replace(
-        /<link([^>]+)href="\.\/*assets\/(index-[^"]+\.css)"([^>]*)>/g,
+    function replaceCss(html) {
+      return html.replace(
+        /<link([^>]+)href="\.\/?assets\/(index-[^"]+\.css)"([^>]*)>/g,
         `<link$1href="https://cdn.jsdelivr.net/gh/ajgpw/youtube@main/client/dist/assets/$2"$3>`
       );
+    }
 
-      // JSを置換
-      html = html.replace(
-        /<script([^>]+)src="\.\/*assets\/(index-[^"]+\.js)"([^>]*)><\/script>/g,
+    function replaceJs(html) {
+      return html.replace(
+        /<script([^>]+)src="\.\/?assets\/(index-[^"]+\.js)"([^>]*)><\/script>/g,
         `<script$1src="https://cdn.jsdelivr.net/gh/ajgpw/youtube@main/client/dist/assets/$2"$3></script>`
       );
+    }
 
+    function replaceAssets(html) {
+      html = replaceCss(html);
+      html = replaceJs(html);
       return html;
     }
 
-    // 変換ボタン
     document.getElementById("convertBtn").addEventListener("click", () => {
       const input = document.getElementById("inputHtml").value;
+      if (!input) return alert("HTMLを入力してください。");
       const output = replaceAssets(input);
       document.getElementById("outputHtml").textContent = output;
     });
 
-    // コピー用ボタン
     document.getElementById("copyBtn").addEventListener("click", async () => {
       const output = document.getElementById("outputHtml").textContent;
       if (!output) return alert("まず変換してください。");
