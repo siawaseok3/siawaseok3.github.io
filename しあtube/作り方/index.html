@@ -5,11 +5,89 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GAS Webアプリ デプロイ手順</title>
   <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; background: #f9f9f9; }
-    h1, h2 { color: #333; }
-    img { max-width: 100%; height: auto; margin: 10px 0; border: 1px solid #ccc; }
-    code { background: #eee; padding: 2px 4px; border-radius: 4px; }
-    ol { margin-left: 20px; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f4f8;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 40px;
+    }
+
+    ol {
+      counter-reset: step;
+      list-style: none;
+      padding: 0;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    li {
+      counter-increment: step;
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      position: relative;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    li:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    li::before {
+      content: counter(step);
+      position: absolute;
+      left: -50px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #3498db;
+      color: white;
+      width: 36px;
+      height: 36px;
+      text-align: center;
+      line-height: 36px;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 16px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin: 15px 0;
+      border: 1px solid #ccc;
+    }
+
+    code {
+      background-color: #eef;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+
+    strong {
+      color: #2c3e50;
+    }
+
+    @media (max-width: 600px) {
+      li::before {
+        left: -40px;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+      }
+    }
   </style>
 </head>
 <body>
