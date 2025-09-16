@@ -30,7 +30,7 @@
   li {
     counter-increment: step;
     background: #fff;
-    padding: 20px 20px 20px 60px; /* 左に余白を確保 */
+    padding: 25px 20px 20px 20px; /* 左上に番号スペースは不要 */
     margin-bottom: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.05);
@@ -43,21 +43,21 @@
     box-shadow: 0 8px 16px rgba(0,0,0,0.1);
   }
 
+  /* 左上に小さい番号 */
   li::before {
     content: counter(step);
     position: absolute;
-    left: 20px; /* カードの内側に寄せる */
-    top: 50%;
-    transform: translateY(-50%);
+    top: 10px;
+    left: 10px;
     background: #3498db;
     color: white;
-    width: 36px;
-    height: 36px;
+    width: 24px;
+    height: 24px;
     text-align: center;
-    line-height: 36px;
+    line-height: 24px;
     border-radius: 50%;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 14px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
 
@@ -82,13 +82,10 @@
 
   @media (max-width: 600px) {
     li::before {
-      left: 10px;
-      width: 30px;
-      height: 30px;
-      line-height: 30px;
-    }
-    li {
-      padding-left: 50px;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      font-size: 12px;
     }
   }
 </style>
