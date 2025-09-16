@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GAS Webアプリ デプロイ手順</title>
+<title>しあtube作り方 - GAS</title>
 <style>
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -30,17 +30,11 @@
   li {
     counter-increment: step;
     background: #fff;
-    padding: 40px 20px 20px 20px; /* 上に余白を確保 */
+    padding: 45px 15px 15px 15px; 
     margin-bottom: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.05);
     position: relative;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-
-  li:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
   }
 
   li::before {
@@ -64,7 +58,7 @@
     max-width: 100%;
     height: auto;
     border-radius: 8px;
-    margin: 15px 0;
+    margin: 10px 0;
     border: 1px solid #ccc;
   }
 
@@ -87,14 +81,14 @@
       font-size: 12px;
     }
     li {
-      padding-top: 35px; /* モバイルでは少し小さく */
+      padding-top: 45px;
     }
   }
 </style>
 </head>
 <body>
 
-<h1>GAS Webアプリ デプロイ手順</h1>
+<h1>しあtube GAS Webアプリ デプロイ手順</h1>
 
 <ol>
   <li>
@@ -120,7 +114,14 @@
     <img src="https://raw.githubusercontent.com/ajgpw/ajgpw.github.io/refs/heads/main/%E3%81%97%E3%81%82tube/%E4%BD%9C%E3%82%8A%E6%96%B9/Screenshot%202025-09-16%2011.21.19.png" alt="デプロイ画面">
   </li>
   <li>
-    初回のみ認証画面が表示されます。案内に従って認証を完了してください。
+    アクセスの許可を聞かれるので承認します。<br>
+    <img src="https://cdn-ak.f.st-hatena.com/images/fotolife/m/mo_kurita/20240819/20240819184913.png" alt="アクセス許可1">
+    <img src="https://cdn-ak.f.st-hatena.com/images/fotolife/m/mo_kurita/20240819/20240819184950.png" alt="アクセス許可2">
+    <br>続けて、承認しましょう。 ［詳細（Advanced）］をクリックして、一番下のリンクをクリックします。<br>
+    <img src="https://cdn-ak.f.st-hatena.com/images/fotolife/m/mo_kurita/20240819/20240819193332.png" alt="詳細リンク">
+    <img src="https://cdn-ak.f.st-hatena.com/images/fotolife/m/mo_kurita/20240819/20240819193414.png" alt="詳細リンク2">
+    <br>［許可（Allow）］をクリックします。<br>
+    <img src="https://cdn-ak.f.st-hatena.com/images/fotolife/m/mo_kurita/20240819/20240819185325.png" alt="許可ボタン">
   </li>
   <li>
     デプロイが完了するとURLが表示されます。そのURLにアクセスすると、GitHub 上の <code>index.html.txt</code> の内容がWebページとして実行されます。
