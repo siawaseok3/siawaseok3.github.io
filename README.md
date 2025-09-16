@@ -1,1 +1,1 @@
-[https://ajgpw.github.io/yuki/](https://ajgpw.github.io/yuki/)<br>
+[https://ajgpw.github.io/](https://ajgpw.github.io/)<br>
