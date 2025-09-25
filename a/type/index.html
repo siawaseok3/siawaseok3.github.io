@@ -1,0 +1,91 @@
+<html><head>
+<meta charset="utf-8">
+<title>寿司打 - Play </title>
+<link rel="icon" href="https://sushida.net/img/favicon.ico">
+<link href="css/play.css?02062" rel="stylesheet" type="text/css">
+
+<link href="css/style_menu.css?0206" rel="stylesheet" type="text/css">
+<script src="https://pagead2.googlesyndication.com/pagead/managed/js/adsense/m202509180101/show_ads_impl_fy2021.js?bust=31094821"></script><script src="https://pagead2.googlesyndication.com/pagead/managed/js/adsense/m202509180101/slotcar_library_fy2021.js?bust=31094821"></script><script type="text/javascript" src="js/parts.js?0206"></script>
+
+<link rel="stylesheet" href="TemplateData/style.css">
+<script src="TemplateData/UnityProgress.js"></script>
+<script src="files/v1_3/UnityLoader.js?1126"></script>
+<script>
+	function game() {
+      var gameInstance = UnityLoader.instantiate("gameContainer", "files/v1_3/Web.json", {onProgress: UnityProgress});
+	  document.getElementsByTagName('canvas')[0].ondragstart = function() { return false; };
+	}
+</script>
+<meta http-equiv="origin-trial" content="AlK2UR5SkAlj8jjdEc9p3F3xuFYlF6LYjAML3EOqw1g26eCwWPjdmecULvBH5MVPoqKYrOfPhYVL71xAXI1IBQoAAAB8eyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiV2ViVmlld1hSZXF1ZXN0ZWRXaXRoRGVwcmVjYXRpb24iLCJleHBpcnkiOjE3NTgwNjcxOTksImlzU3ViZG9tYWluIjp0cnVlfQ=="><meta http-equiv="origin-trial" content="Amm8/NmvvQfhwCib6I7ZsmUxiSCfOxWxHayJwyU1r3gRIItzr7bNQid6O8ZYaE1GSQTa69WwhPC9flq/oYkRBwsAAACCeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiV2ViVmlld1hSZXF1ZXN0ZWRXaXRoRGVwcmVjYXRpb24iLCJleHBpcnkiOjE3NTgwNjcxOTksImlzU3ViZG9tYWluIjp0cnVlfQ=="><meta http-equiv="origin-trial" content="A9nrunKdU5m96PSN1XsSGr3qOP0lvPFUB2AiAylCDlN5DTl17uDFkpQuHj1AFtgWLxpLaiBZuhrtb2WOu7ofHwEAAACKeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A93bovR+QVXNx2/38qDbmeYYf1wdte9EO37K9eMq3r+541qo0byhYU899BhPB7Cv9QqD7wIbR1B6OAc9kEfYCA4AAACQeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A1S5fojrAunSDrFbD8OfGmFHdRFZymSM/1ss3G+NEttCLfHkXvlcF6LGLH8Mo5PakLO1sCASXU1/gQf6XGuTBgwAAACQeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXRhZ3NlcnZpY2VzLmNvbTo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><script async="" src="https://fundingchoicesmessages.google.com/i/ca-pub-5774279613524055?href=https%3A%2F%2Fsushida.net%2Fplay.html&amp;ers=2"></script><script async="" src="https://fundingchoicesmessages.google.com/f/AGSKWxVGhIU3Ukq65sexEV8s3fnIIsPBpIhLy-K-iGueZcu1x7MtNvAax8C21q8EBPhkGcGoq0HBzCmqWntA1GT53bW_OBdYX-wVrAunHYObqSFv3lKmCzb8mcYbKy8opS7TLuHvbCQkkA==?fccs=W1siQUtzUm9sLUlIbGlXdks3R3hFZDVPWkdMQ2ZPdHdWVWluNkVHWkNaMVlXbEJPdEpPNF9NNjhhRDJHYVI3SWJWdTdNNEFUQzRVLUlxWWtnVk1vUS1zeWQwQURWYzg3Ty1hXy13NFU1Nmp6TV9vbExCZ3NIbVY1aExDOGVQUTFhS1Y4UWhNX281ZkZFV3ZZRTdNRTQ0VkotTFdwbmh5SEFQelNBPT0iXSxudWxsLG51bGwsbnVsbCxudWxsLG51bGwsWzE3NTg3Nzc3MTUsNzI1MDAwMDAwXSxudWxsLG51bGwsbnVsbCxbbnVsbCxbN11dLCJodHRwczovL3N1c2hpZGEubmV0L3BsYXkuaHRtbCIsbnVsbCxbWzgsIlZWNUJjRm8tVHl3Il0sWzksImphIl0sWzIzLCIxNzU3MDQzNzc4Il0sWzE5LCIyIl0sWzE3LCJbMF0iXSxbMjQsInN1c2hpZGEubmV0Il0sWzI5LCJmYWxzZSJdXV0"></script><script async="" src="https://fundingchoicesmessages.google.com/f/AGSKWxXEsasZF9q8EkaCs-Kl7vdwUwIkJYRXX6V15CDCwBI6JbyrDpfk_gFFXlzh41updH5x1K8NMxR8-zclF35OQx4cuPPVhcQvTRtfRpDt4Q-4AZIKo336T0QeCO2Nuv6llq-W58Pjyg==?fccs=W1siQUtzUm9sLUlIbGlXdks3R3hFZDVPWkdMQ2ZPdHdWVWluNkVHWkNaMVlXbEJPdEpPNF9NNjhhRDJHYVI3SWJWdTdNNEFUQzRVLUlxWWtnVk1vUS1zeWQwQURWYzg3Ty1hXy13NFU1Nmp6TV9vbExCZ3NIbVY1aExDOGVQUTFhS1Y4UWhNX281ZkZFV3ZZRTdNRTQ0VkotTFdwbmh5SEFQelNBPT0iXSxudWxsLG51bGwsbnVsbCxudWxsLG51bGwsWzE3NTg3Nzc3MTUsODAyMDAwMDAwXSxudWxsLG51bGwsbnVsbCxbbnVsbCxbNyw5XSxudWxsLDIsbnVsbCwiamEiXSwiaHR0cHM6Ly9zdXNoaWRhLm5ldC9wbGF5Lmh0bWwiLG51bGwsW1s4LCJWVjVCY0ZvLVR5dyJdLFs5LCJqYSJdLFsyMywiMTc1NzA0Mzc3OCJdLFsxOSwiMiJdLFsxNywiWzBdIl0sWzI0LCJzdXNoaWRhLm5ldCJdLFsyOSwiZmFsc2UiXV1d"></script><script async="" src="https://fundingchoicesmessages.google.com/f/AGSKWxWlWJLVLvK8aJbp_YyqCNZuZz4D11dKlYTnv2SVkylTemxC2c1bjYYoSfRPgKqSfjKJuaIWFMYTqC4o-frRp4AO5giKKSLYxwib38B66zBDyn0EZxY5nvXSICIVjqnP1hLJhhqw4A==?fccs=W1siQUtzUm9sLUlIbGlXdks3R3hFZDVPWkdMQ2ZPdHdWVWluNkVHWkNaMVlXbEJPdEpPNF9NNjhhRDJHYVI3SWJWdTdNNEFUQzRVLUlxWWtnVk1vUS1zeWQwQURWYzg3Ty1hXy13NFU1Nmp6TV9vbExCZ3NIbVY1aExDOGVQUTFhS1Y4UWhNX281ZkZFV3ZZRTdNRTQ0VkotTFdwbmh5SEFQelNBPT0iXSxudWxsLG51bGwsbnVsbCxudWxsLG51bGwsWzE3NTg3Nzc3MTYsOTA2MDAwMDAwXSxudWxsLG51bGwsbnVsbCxbbnVsbCxbNyw5LDZdLG51bGwsMixudWxsLCJqYSIsbnVsbCxudWxsLG51bGwsbnVsbCxudWxsLDFdLCJodHRwczovL3N1c2hpZGEubmV0L3BsYXkuaHRtbCIsbnVsbCxbWzgsIlZWNUJjRm8tVHl3Il0sWzksImphIl0sWzIzLCIxNzU3MDQzNzc4Il0sWzE5LCIyIl0sWzE3LCJbMF0iXSxbMjQsInN1c2hpZGEubmV0Il0sWzI5LCJmYWxzZSJdXV0"></script></head>
+
+<body onload="game()">
+<div id="header"><div id="logo"><a href="https://neutralx0.net/"><img src="https://sushida.net/img/logo.gif" width="120" height="40" alt=""></a></div><div id="header_menu"><ul><li><p><a href="https://neutralx0.net" style="color:#333">HOME</a></p></li><li><p><a href="https://keyx0.net/">★タイピング</a></p></li><li><p><a href="https://neutralx0.net/room/">★脱出ゲーム</a></p></li><li><p><a href="https://neutralx0.net/mini/sakusaku/">★ミニゲーム</a></p></li><li><p><a href="https://neutralx0.net/tools/">★Webツール</a></p></li><li><p><a href="https://neutralx0.com/" target="_blank" class="topmenu">実験室</a></p></li><li><p><a href="https://youtube.com/@neutralx" target="_blank" class="topmenu">Youtube</a></p></li><li><p><a href="http://info.neutralx0.com/" target="_blank" class="topmenu">ヘルプ</a></p></li><li><p><a href="https://neutralx0.net/info.html" target="_blank" style="font-size:11px;color:#333">更新<span style="font-size:11px;color: #333333">12/19</span> </a></p></li></ul></div></div>
+<script>header_f();</script>
+<div id="contents">
+  <div id="main">
+    <div id="game">
+    	<div class="webgl-content">
+      		<div id="gameContainer" style="width: 500px; height: 420px; color: rgb(85, 85, 85); padding: 0px; margin: 0px; border: 0px; position: relative; background: rgb(0, 0, 0);"><canvas id="#canvas" width="500" height="420" style="cursor: default;"></canvas><div class="logo Dark" style="display: none;"></div><div class="progress Dark" style="display: none;"><div class="empty" style="width: 0%;"></div><div class="full" style="width: 100%;"></div></div></div>
+		</div>
+    </div>
+    <div class="ex"><a href="https://sushida.net/"><img src="img/b_top_back.gif" width="104" height="22" alt=""></a>
+  	</div>
+  	<div class="ad_728">
+<script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5774279613524055" crossorigin="anonymous" data-checked-head="true"></script>
+<!-- sushida_728x90 -->
+<ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-5774279613524055" data-ad-slot="4383492286" data-adsbygoogle-status="done" data-ad-status="filled"><div id="aswift_1_host" style="border: none; height: 90px; width: 728px; margin: 0px; padding: 0px; position: relative; visibility: visible; background-color: transparent; display: inline-block;"><iframe id="aswift_1" name="aswift_1" browsingtopics="true" style="left:0;position:absolute;top:0;border:0;width:728px;height:90px;min-height:auto;max-height:none;min-width:auto;max-width:none;" sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" width="728" height="90" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allow="attribution-reporting; run-ad-auction" src="https://googleads.g.doubleclick.net/pagead/ads?client=ca-pub-5774279613524055&amp;output=html&amp;h=90&amp;slotname=4383492286&amp;adk=1233209639&amp;adf=3942228698&amp;pi=t.ma~as.4383492286&amp;w=728&amp;lmt=1743030685&amp;format=728x90&amp;url=https%3A%2F%2Fsushida.net%2Fplay.html&amp;wgl=1&amp;aieuf=1&amp;uach=WyJDaHJvbWUgT1MiLCIxNjM3MS40OS4wIiwieDg2IiwiIiwiMTQwLjAuNzMzOS4yMDEiLG51bGwsMCxudWxsLCI2NCIsW1siQ2hyb21pdW0iLCIxNDAuMC43MzM5LjIwMSJdLFsiTm90PUE_QnJhbmQiLCIyNC4wLjAuMCJdLFsiR29vZ2xlIENocm9tZSIsIjE0MC4wLjczMzkuMjAxIl1dLDBd&amp;abgtt=6&amp;dt=1758777715378&amp;bpp=8&amp;bdt=85&amp;idt=37&amp;shv=r20250922&amp;mjsv=m202509180101&amp;ptt=9&amp;saldr=aa&amp;abxe=1&amp;cookie=ID%3D6508eb85230c0326%3AT%3D1757043778%3ART%3D1758777600%3AS%3DALNI_MacZ6MTmSmnZAwnTPmjPObm8xOuGg&amp;gpic=UID%3D0000118f6224fc7e%3AT%3D1757043778%3ART%3D1758777600%3AS%3DALNI_MbPVkRdMK4Pwr6ffJ8LDCxAp9gu5g&amp;eo_id_str=ID%3Dbd8c63422c945a8f%3AT%3D1757043778%3ART%3D1758777600%3AS%3DAA-AfjZO_uR0JSCFxuQABzArgcAL&amp;prev_fmts=0x0&amp;nras=1&amp;correlator=6166902212631&amp;frm=20&amp;pv=1&amp;u_tz=540&amp;u_his=9&amp;u_h=768&amp;u_w=1366&amp;u_ah=768&amp;u_aw=1366&amp;u_cd=24&amp;u_sd=1&amp;dmc=8&amp;adx=314&amp;ady=586&amp;biw=1366&amp;bih=680&amp;scr_x=0&amp;scr_y=0&amp;eid=31094693%2C31094806%2C31094821&amp;oid=2&amp;pvsid=1664990939816130&amp;tmod=1389123269&amp;uas=0&amp;nvt=1&amp;ref=https%3A%2F%2Fsushida.net%2F&amp;fc=1920&amp;brdim=0%2C0%2C0%2C0%2C1366%2C0%2C1366%2C768%2C1366%2C680&amp;vis=1&amp;rsz=%7C%7CeE%7C&amp;abl=CS&amp;pfx=0&amp;fu=0&amp;bc=31&amp;bz=1&amp;td=1&amp;tdf=2&amp;psd=W251bGwsbnVsbCxudWxsLDNd&amp;nt=1&amp;ifi=2&amp;uci=a!2&amp;fsb=1&amp;dtd=45" data-google-container-id="a!2" tabindex="0" title="Advertisement" aria-label="Advertisement" data-google-query-id="CPT06seV848DFULIFgUdDIo5sA" data-load-complete="true"></iframe></div></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+  	</div>
+  	<div class="info_l"> 【<a href="https://keyx0.net" target="_top">Neutralの他のタイピングゲーム</a>はこちら▼】<br>
+  		<table border="0" cellpadding="0" cellspacing="20" style="margin: 0px auto">
+  			<tbody>
+  				<tr>
+  					<td><a href="https://keyx0.net/pop/"><img src="img/link_l/tp_pop.png" alt="Popタイピング" width="160" height="102" title="Popタイピング"></a></td>
+  					<td><a href="https://keyx0.net/osakana/"><img src="img/link_l/tp_osakana.png" alt="お魚タイピング" width="160" height="102" title="お魚タイピング"></a></td>
+  					<td><a href="https://keyx0.net/az/"><img src="img/link_l/tp_az.png" alt="A-Zタイピング" width="160" height="102" title="A-Zタイピング"></a></td>
+  					</tr>
+  				<tr>
+  					<td><a href="https://keyx0.net/easy/"><img src="img/link_l/tp_easy.png" alt="Easyタイピング" width="160" height="102" title="Easyタイピング"></a></td>
+  					<td><a href="https://keyx0.net/map/"><img src="img/link_l/tp_map.png" alt="県名当てタイピング" width="160" height="102" title="県名当てタイピング"></a></td>
+  					<td><a href="https://keyx0.net/map_c/"><img src="img/link_l/tp_map_c.png" alt="県庁所在地当てタイピング" width="160" height="102" title="県庁所在地当てタイピング"></a></td>
+  					</tr>
+  				</tbody>
+  			</table>
+  	</div>
+  	<div class="info">
+【お知らせ】<br>
+★寿司打のURLが <a href="https://sushida.net">https://sushida.net</a> になりました。<br>
+<p style="background-color:#333; margin: 16px 0px;padding: 16px 24px; border-radius: 6px">
+	※ゲームをプレイするにはWebGL対応のブラウザが必要になります。<br>
+現在ご利用のブラウザで動作しない場合は、<a href="https://www.google.com/intl/ja_ALL/chrome/" target="_blank">Google Chrome</a>、<a href="https://www.mozilla.org/ja/firefox/" target="_blank">Firefox</a>、<a href="https://www.microsoft.com/ja-jp/windows/microsoft-edge" target="_blank">Microsoft Edge</a>等の最新版をお試しください。</p>
+<p>★ローマ字表示のON/OFFは、タイトル下の「設定」ボタンから行えます。</p>
+<br>
+<p>★ゲーム中にキーボードで入力ができなくなってしまった場合は、マウスでゲーム画面を一度クリックしてみてください。</p>
+<br>
+<p>・このサイトは<a href="https://neutralx0.net">Neutral</a>が運営しています。不具合やお気づきの点などございましたら<a href="http://info.neutralx0.com/" target="_blank">こちら</a>からご連絡いただければ幸いです。 </p><br>
+  	</div>
+  	<div class="info_l"> 【<a href="https://neutralx0.net/tools/">Neutralの便利ツール</a>はこちら▼】
+<table border="0" cellpadding="0" cellspacing="20" style="margin: 10px auto">
+  			<tbody>
+  				<tr>
+  					<td><a href="https://neutralx0.net/tools/dot3/"><img src="img/link_l/tool_minidot3.png" alt="ミニドット絵メーカー３" width="160" height="102" title="ミニドット絵メーカー３"></a></td>
+  					<td><a href="https://neutralx0.net/tools/memo/"><img src="img/link_l/tool_memo.png" alt="卓上手書きメモ" width="160" height="102" title="卓上手書きメモ"></a></td>
+  					<td><a href="https://neutralx0.net/tools/line/"><img src="img/link_l/tool_line.png" alt="集中線追加ツール" width="160" height="102" title="集中線追加ツール"></a></td>
+  					</tr>
+  				<tr>
+  					<td><a href="https://neutralx0.net/tools/cat_icon/"><img src="img/link_l/tool_cat.png" alt="化け猫アイコンメーカー" width="160" height="102" title="化け猫アイコンメーカー"></a></td>
+  					<td><a href="https://neutralx0.net/tools/resize_img/"><img src="img/link_l/tool_resize.png" alt="画像サイズ変更ツール" width="160" height="102" title="画像サイズ変更ツール"></a></td>
+  					<td><a href="https://neutralx0.net/tools/symmetry/"><img src="img/link_l/tool_symmetry.png" alt="対称落書きツール" width="160" height="102" title="対称落書きツール"></a></td>
+  					</tr>
+  				</tbody>
+  			</table>
+  		</div>
+  </div>
+</div>
+<div id="footer"><div id="page_top"><a href="#top">▲</a></div><div id="footer_main"><p><a href="https://neutralx0.net/about.html" target="_blank">ご利用規約・プライバシーポリシー</a></p><p>© 2005 Neutral.</p></div></div>
+<script>footer_f();</script>
+
+
+<ins class="adsbygoogle adsbygoogle-noablate" data-adsbygoogle-status="done" style="display: none !important;" data-ad-status="unfilled"><div id="aswift_0_host" style="border: none; height: 0px; width: 0px; margin: 0px; padding: 0px; position: relative; visibility: visible; background-color: transparent; display: inline-block;"><iframe id="aswift_0" name="aswift_0" browsingtopics="true" style="left:0;position:absolute;top:0;border:0;width:undefinedpx;height:undefinedpx;min-height:auto;max-height:none;min-width:auto;max-width:none;" sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allow="attribution-reporting; run-ad-auction" src="https://googleads.g.doubleclick.net/pagead/ads?client=ca-pub-5774279613524055&amp;output=html&amp;adk=1812271804&amp;adf=3025194257&amp;lmt=1743030685&amp;plaf=1%3A2%2C2%3A2%2C7%3A2&amp;plat=1%3A128%2C2%3A128%2C3%3A128%2C4%3A128%2C8%3A128%2C9%3A32776%2C16%3A8388608%2C17%3A32%2C24%3A32%2C25%3A32%2C30%3A1081344%2C32%3A32%2C41%3A32%2C42%3A32&amp;format=0x0&amp;url=https%3A%2F%2Fsushida.net%2Fplay.html&amp;pra=5&amp;wgl=1&amp;aihb=0&amp;asro=0&amp;aifxl=29_18~30_19&amp;aiapm=0.1542&amp;aiapmd=0.1423&amp;aiapmi=0.16&amp;aiapmid=1&amp;aiact=0.5423&amp;aiactd=0.7&amp;aicct=0.7&amp;aicctd=0.5799&amp;ailct=0.5849&amp;ailctd=0.65&amp;aimart=4&amp;aimartd=4&amp;uach=WyJDaHJvbWUgT1MiLCIxNjM3MS40OS4wIiwieDg2IiwiIiwiMTQwLjAuNzMzOS4yMDEiLG51bGwsMCxudWxsLCI2NCIsW1siQ2hyb21pdW0iLCIxNDAuMC43MzM5LjIwMSJdLFsiTm90PUE_QnJhbmQiLCIyNC4wLjAuMCJdLFsiR29vZ2xlIENocm9tZSIsIjE0MC4wLjczMzkuMjAxIl1dLDBd&amp;abgtt=6&amp;dt=1758777715376&amp;bpp=2&amp;bdt=84&amp;idt=21&amp;shv=r20250922&amp;mjsv=m202509180101&amp;ptt=9&amp;saldr=aa&amp;abxe=1&amp;cookie=ID%3D6508eb85230c0326%3AT%3D1757043778%3ART%3D1758777600%3AS%3DALNI_MacZ6MTmSmnZAwnTPmjPObm8xOuGg&amp;gpic=UID%3D0000118f6224fc7e%3AT%3D1757043778%3ART%3D1758777600%3AS%3DALNI_MbPVkRdMK4Pwr6ffJ8LDCxAp9gu5g&amp;eo_id_str=ID%3Dbd8c63422c945a8f%3AT%3D1757043778%3ART%3D1758777600%3AS%3DAA-AfjZO_uR0JSCFxuQABzArgcAL&amp;nras=1&amp;correlator=6166902212631&amp;frm=20&amp;pv=2&amp;u_tz=540&amp;u_his=9&amp;u_h=768&amp;u_w=1366&amp;u_ah=768&amp;u_aw=1366&amp;u_cd=24&amp;u_sd=1&amp;dmc=8&amp;adx=-12245933&amp;ady=-12245933&amp;biw=1366&amp;bih=680&amp;scr_x=0&amp;scr_y=0&amp;eid=31094693%2C31094806%2C31094821&amp;oid=2&amp;pvsid=1664990939816130&amp;tmod=1389123269&amp;uas=0&amp;nvt=1&amp;fsapi=1&amp;ref=https%3A%2F%2Fsushida.net%2F&amp;fc=1920&amp;brdim=0%2C0%2C0%2C0%2C1366%2C0%2C1366%2C768%2C1366%2C680&amp;vis=1&amp;rsz=%7C%7Cs%7C&amp;abl=NS&amp;fu=32768&amp;bc=31&amp;bz=1&amp;td=1&amp;tdf=2&amp;psd=W251bGwsbnVsbCxudWxsLDNd&amp;nt=1&amp;ifi=1&amp;uci=a!1&amp;fsb=1&amp;dtd=31" data-google-container-id="a!1" tabindex="0" title="Advertisement" aria-label="Advertisement" data-load-complete="true"></iframe></div></ins><iframe name="googlefcPresent" style="display: none; width: 0px; height: 0px; border: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><iframe name="__tcfapiLocator" src="about:blank" style="display: none; width: 0px; height: 0px; border: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><iframe name="googlefcInactive" src="about:blank" style="display: none; width: 0px; height: 0px; border: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><iframe name="googlefcLoaded" src="about:blank" style="display: none; width: 0px; height: 0px; border: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><script src="blob:https://sushida.net/df3f835f-11b5-4e17-b056-7a3765b08e5a"></script></body><iframe id="google_esf" name="google_esf" src="https://googleads.g.doubleclick.net/pagead/html/r20250922/r20190131/zrt_lookup_fy2021.html" style="display: none;"></iframe></html>
