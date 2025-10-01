@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>m3u8 Player</title>
+  <style>
+    body {
+      background: #111;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #controls {
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      width: 400px;
+      padding: 8px;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      margin-left: 10px;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      background: #28a745;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #218838;
+    }
+    video {
+      width: 80%;
+      max-width: 800px;
+      border: 2px solid #444;
+      border-radius: 10px;
+      background: black;
+    }
+  </style>
+</head>
+<body>
+  <div id="controls">
+    <input id="m3u8url" type="text" placeholder="m3u8 の URL を入力">
+    <button onclick="playM3U8()">再生</button>
+  </div>
+
+  <video id="video" controls></video>
+
+  <!-- hls.js ライブラリ -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script>
+    let hls;
+    function playM3U8() {
+      const url = document.getElementById("m3u8url").value.trim();
+      const video = document.getElementById("video");
+
+      if (!url) {
+        alert("m3u8 の URL を入力してください");
+        return;
+      }
+
+      // すでに再生中なら一旦停止
+      if (hls) {
+        hls.destroy();
+      }
+      video.src = "";
+
+      if (Hls.isSupported()) {
+        hls = new Hls();
+        hls.loadSource(url);
+        hls.attachMedia(video);
+      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        // Safari はネイティブ対応
+        video.src = url;
+      } else {
+        alert("このブラウザはHLSをサポートしていません");
+      }
+    }
+  </script>
+</body>
+</html>
