@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>m3u8 Player</title>
+  <title>m3u8 Proxy Player</title>
   <style>
     body {
       background: #111;
@@ -56,16 +56,18 @@
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script>
     let hls;
+
     function playM3U8() {
-      const url = document.getElementById("m3u8url").value.trim();
+      const inputUrl = document.getElementById("m3u8url").value.trim();
       const video = document.getElementById("video");
 
-      if (!url) {
+      if (!inputUrl) {
         alert("m3u8 の URL を入力してください");
         return;
       }
 
-      // すでに再生中なら一旦停止
+      const proxyUrl = "http://siawaseok.f5.si:3004/proxy?url=" + encodeURIComponent(inputUrl);
+
       if (hls) {
         hls.destroy();
       }
@@ -73,11 +75,10 @@
 
       if (Hls.isSupported()) {
         hls = new Hls();
-        hls.loadSource(url);
+        hls.loadSource(proxyUrl);
         hls.attachMedia(video);
       } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        // Safari はネイティブ対応
-        video.src = url;
+        video.src = proxyUrl;
       } else {
         alert("このブラウザはHLSをサポートしていません");
       }
