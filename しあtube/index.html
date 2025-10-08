@@ -1845,8 +1845,11 @@ function en(e, t) {
 }
 
 function fr(e, t) {
-	return e ? B(e) && B(t) ? [...new Set([...e, ...t])] : Ee(Object.create(null),
-		ar(e), ar(t ? ? {})) : t
+	return e
+		? B(e) && B(t)
+			? [...new Set([...e, ...t])]
+			: Ee(Object.create(null), ar(e), ar(t ?? {}))
+		: t;
 }
 
 function $l(e, t) {
