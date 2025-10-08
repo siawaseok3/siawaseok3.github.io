@@ -3676,7 +3676,7 @@ const Bt = Symbol("_assign"),
 		}, mounted(e, {
 			value: t
 		}) {
-			e.value = t ? ? ""
+			e.value = t ?? ""
 		}, beforeUpdate(e, {
 			value: t,
 			oldValue: n,
@@ -3689,7 +3689,7 @@ const Bt = Symbol("_assign"),
 			if (e[Bt] = Hn(i), e.composing) return;
 			const l = (o || e.type === "number") && !/^0\d/.test(e.value) ? $n(e.value) :
 				e.value,
-				a = t ? ? "";
+				a = t ?? "";
 			l !== a && (document.activeElement === e && e.type !== "range" && (s && t ===
 				n || r && e.value.trim() === a) || (e.value = a))
 		}
@@ -3912,7 +3912,7 @@ function vs(e, t, n = "/") {
 	let a = t.indexOf("?");
 	return l < a && l >= 0 && (a = -1), a > -1 && (s = t.slice(0, a), o = t.slice(
 		a + 1, l > -1 ? l : t.length), r = e(o)), l > -1 && (s = s || t.slice(0, l),
-		i = t.slice(l, t.length)), s = lc(s ? ? t, n), {
+		i = t.slice(l, t.length)), s = lc(s ?? t, n), {
 		fullPath: s + (o && "?") + o + i,
 		path: s,
 		query: r,
@@ -4889,7 +4889,7 @@ function Hc(e, t) {
 function Wr(e) {
 	return e ? e.aliasOf ? e.aliasOf.path : e.path : ""
 }
-const zr = (e, t, n) => e ? ? t ? ? n,
+const zr = (e, t, n) => e ?? t ?? n,
 	Nc = ko({
 		name: "RouterView",
 		inheritAttrs: !1,
@@ -5950,14 +5950,14 @@ const wu = {
 					const e = await fetch(`${kt()}?comments=${this.videoId}`);
 					if (!e.ok) throw new Error(`HTTP error! status: ${e.status}`);
 					const t = await e.json();
-					this.totalCommentCount = t.totalCommentCount ? ? null, Array.isArray(t.comments) ?
+					this.totalCommentCount = t.totalCommentCount ?? null, Array.isArray(t.comments) ?
 						this.comments = t.comments.map((n, s) => ({
 							id: n.id || s,
 							author: n.author || "匿名",
 							authorIcon: n.authorIcon || null,
 							text: n.text || "",
 							date: n.date || "",
-							likes: n.likes ? ? 0,
+							likes: n.likes ?? 0,
 							isExpanded: !1,
 							isClamped: !1
 						})) : this.comments = []
