@@ -13,6 +13,27 @@
       background-color: white;
     }
     </style>
+<script>
+const box = document.querySelector('.settings-box[data-v-a10da1da]');
+let timer;
+
+// 初期状態は非表示
+box.style.display = 'none';
+function showBox() {
+  // ボックスを表示
+  box.style.display = 'flex';
+    if (timer) clearTimeout(timer);
+  // 10秒後に非表示にする
+  timer = setTimeout(() => {
+    box.style.display = 'none';
+  }, 10000);
+}
+
+// 操作イベントを監視
+['mousemove', 'scroll', 'keydown', 'touchstart', 'mousedown'].forEach(event => {
+  window.addEventListener(event, showBox);
+});
+</script>
     <script type="module">
 (function() {
 	const t = document.createElement("link").relList;
