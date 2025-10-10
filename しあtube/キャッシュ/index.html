@@ -4,46 +4,13 @@
 <meta charset="UTF-8">
 <title>キャッシュ確認</title>
 <style>
-  body { 
-    font-family: Arial, sans-serif; 
-    margin: 20px; 
-    background-color: #fff; 
-    color: #000;
-  }
+  body { font-family: Arial, sans-serif; margin: 20px; background-color: #fff; color: #000; }
   h2 { margin-bottom: 20px; }
-  .cache-item { 
-    border: 1px solid #ddd; 
-    border-radius: 8px; 
-    padding: 12px; 
-    margin-bottom: 10px; 
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  }
-  .cache-header { 
-    cursor: pointer; 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    font-weight: normal; 
-    font-size: 16px;
-  }
-  .cache-details { 
-    display: none; 
-    margin-top: 10px; 
-    padding-left: 5px; 
-  }
-  button { 
-    padding: 6px 12px; 
-    margin-bottom: 20px; 
-    cursor: pointer;
-  }
-  .toggle-btn {
-    background-color: #eee;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 2px 6px;
-    font-size: 12px;
-    cursor: pointer;
-  }
+  .cache-item { border: 1px solid #ddd; border-radius: 8px; padding: 12px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+  .cache-header { display: flex; justify-content: space-between; align-items: center; font-weight: normal; font-size: 16px; }
+  .cache-details { display: none; margin-top: 10px; padding-left: 5px; }
+  button { padding: 6px 12px; margin-bottom: 20px; cursor: pointer; }
+  .toggle-btn { background-color: #eee; border: 1px solid #ccc; border-radius: 4px; padding: 2px 6px; font-size: 12px; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -95,10 +62,12 @@ function displayCache(data) {
       <div>残り時間: ${info.remaining_sec} 秒</div>
       <div>有効期間: ${info.duration_sec} 秒</div>
     `;
+    details.style.display = "none"; // 明示的に初期非表示
     item.appendChild(details);
 
     toggleBtn.onclick = () => {
-      if(details.style.display === "none") {
+      const isHidden = window.getComputedStyle(details).display === "none";
+      if(isHidden) {
         details.style.display = "block";
         toggleBtn.innerText = "詳細を隠す";
       } else {
@@ -112,8 +81,6 @@ function displayCache(data) {
 }
 
 document.getElementById("refreshBtn").addEventListener("click", fetchCache);
-
-// 初回ロード
 fetchCache();
 </script>
 
