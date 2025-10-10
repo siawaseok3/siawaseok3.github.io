@@ -4,11 +4,46 @@
 <meta charset="UTF-8">
 <title>キャッシュ確認</title>
 <style>
-  body { font-family: Arial, sans-serif; margin: 20px; }
-  .cache-item { border: 1px solid #ccc; padding: 10px; margin-bottom: 5px; border-radius: 5px; }
-  .cache-header { cursor: pointer; font-weight: bold; }
-  .cache-details { display: none; margin-top: 5px; padding-left: 10px; }
-  button { margin-bottom: 20px; padding: 5px 10px; }
+  body { 
+    font-family: Arial, sans-serif; 
+    margin: 20px; 
+    background-color: #fff; 
+    color: #000;
+  }
+  h2 { margin-bottom: 20px; }
+  .cache-item { 
+    border: 1px solid #ddd; 
+    border-radius: 8px; 
+    padding: 12px; 
+    margin-bottom: 10px; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  .cache-header { 
+    cursor: pointer; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    font-weight: normal; 
+    font-size: 16px;
+  }
+  .cache-details { 
+    display: none; 
+    margin-top: 10px; 
+    padding-left: 5px; 
+  }
+  button { 
+    padding: 6px 12px; 
+    margin-bottom: 20px; 
+    cursor: pointer;
+  }
+  .toggle-btn {
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 12px;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
@@ -41,10 +76,17 @@ function displayCache(data) {
 
     const header = document.createElement("div");
     header.className = "cache-header";
-    header.innerText = id;
-    header.onclick = () => {
-      details.style.display = details.style.display === "none" ? "block" : "none";
-    };
+
+    const title = document.createElement("span");
+    title.innerText = id;
+
+    const toggleBtn = document.createElement("span");
+    toggleBtn.className = "toggle-btn";
+    toggleBtn.innerText = "詳細表示";
+    
+    header.appendChild(title);
+    header.appendChild(toggleBtn);
+    item.appendChild(header);
 
     const details = document.createElement("div");
     details.className = "cache-details";
@@ -53,15 +95,25 @@ function displayCache(data) {
       <div>残り時間: ${info.remaining_sec} 秒</div>
       <div>有効期間: ${info.duration_sec} 秒</div>
     `;
-
-    item.appendChild(header);
     item.appendChild(details);
+
+    toggleBtn.onclick = () => {
+      if(details.style.display === "none") {
+        details.style.display = "block";
+        toggleBtn.innerText = "詳細を隠す";
+      } else {
+        details.style.display = "none";
+        toggleBtn.innerText = "詳細表示";
+      }
+    };
+
     container.appendChild(item);
   });
 }
 
 document.getElementById("refreshBtn").addEventListener("click", fetchCache);
 
+// 初回ロード
 fetchCache();
 </script>
 
