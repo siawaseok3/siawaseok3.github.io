@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>キャッシュ確認</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  .cache-item { border: 1px solid #ccc; padding: 10px; margin-bottom: 5px; border-radius: 5px; }
+  .cache-header { cursor: pointer; font-weight: bold; }
+  .cache-details { display: none; margin-top: 5px; padding-left: 10px; }
+  button { margin-bottom: 20px; padding: 5px 10px; }
+</style>
+</head>
+<body>
+
+<h2>しあtube動画キャッシュ</h2>
+<button id="refreshBtn">更新</button>
+<div id="cacheContainer">読み込み中...</div>
+
+<script>
+const CACHE_URL = "https://siawaseok.f5.si/api/2/cache";
+
+async function fetchCache() {
+  try {
+    const res = await fetch(CACHE_URL);
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    const data = await res.json();
+    displayCache(data);
+  } catch (err) {
+    document.getElementById("cacheContainer").innerText = "取得失敗: " + err;
+  }
+}
+
+function displayCache(data) {
+  const container = document.getElementById("cacheContainer");
+  container.innerHTML = ""; // クリア
+
+  Object.entries(data).forEach(([id, info]) => {
+    const item = document.createElement("div");
+    item.className = "cache-item";
+
+    const header = document.createElement("div");
+    header.className = "cache-header";
+    header.innerText = id;
+    header.onclick = () => {
+      details.style.display = details.style.display === "none" ? "block" : "none";
+    };
+
+    const details = document.createElement("div");
+    details.className = "cache-details";
+    details.innerHTML = `
+      <div>経過時間: ${info.age_sec} 秒</div>
+      <div>残り時間: ${info.remaining_sec} 秒</div>
+      <div>有効期間: ${info.duration_sec} 秒</div>
+    `;
+
+    item.appendChild(header);
+    item.appendChild(details);
+    container.appendChild(item);
+  });
+}
+
+document.getElementById("refreshBtn").addEventListener("click", fetchCache);
+
+fetchCache();
+</script>
+
+</body>
+</html>
