@@ -5,7 +5,8 @@
 <title>キャッシュ確認</title>
 <style>
   body { font-family: Arial, sans-serif; margin: 20px; background-color: #fff; color: #000; }
-  h2 { margin-bottom: 20px; }
+  h2 { margin-bottom: 10px; }
+  #count { margin-bottom: 20px; font-weight: bold; }
   .cache-item { border: 1px solid #ddd; border-radius: 8px; padding: 12px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
   .cache-header { display: flex; justify-content: space-between; align-items: center; font-weight: normal; font-size: 16px; }
   .cache-details { display: none; margin-top: 10px; padding-left: 5px; }
@@ -14,11 +15,10 @@
 </style>
 </head>
 <body>
-
 <h2>しあtube動画キャッシュ</h2>
+<div id="count">合計: 読み込み中...</div>
 <button id="refreshBtn">更新</button>
 <div id="cacheContainer">読み込み中...</div>
-
 <script>
 const CACHE_URL = "https://siawaseok.f5.si/api/cache";
 
@@ -30,12 +30,17 @@ async function fetchCache() {
     displayCache(data);
   } catch (err) {
     document.getElementById("cacheContainer").innerText = "取得失敗: " + err;
+    document.getElementById("count").innerText = "合計: 不明";
   }
 }
 
 function displayCache(data) {
   const container = document.getElementById("cacheContainer");
-  container.innerHTML = ""; // クリア
+  const countEl = document.getElementById("count");
+  container.innerHTML = ""; 
+
+  const total = Object.keys(data).length;
+  countEl.innerText = `合計: ${total} 件`;
 
   Object.entries(data).forEach(([id, info]) => {
     const item = document.createElement("div");
@@ -50,7 +55,6 @@ function displayCache(data) {
     const toggleBtn = document.createElement("span");
     toggleBtn.className = "toggle-btn";
     toggleBtn.innerText = "詳細表示";
-    
     header.appendChild(title);
     header.appendChild(toggleBtn);
     item.appendChild(header);
@@ -62,7 +66,7 @@ function displayCache(data) {
       <div>残り時間: ${info.remaining_sec} 秒</div>
       <div>有効期間: ${info.duration_sec} 秒</div>
     `;
-    details.style.display = "none"; // 明示的に初期非表示
+    details.style.display = "none";
     item.appendChild(details);
 
     toggleBtn.onclick = () => {
@@ -83,6 +87,5 @@ function displayCache(data) {
 document.getElementById("refreshBtn").addEventListener("click", fetchCache);
 fetchCache();
 </script>
-
 </body>
 </html>
