@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>サーバー処理状況</title>
+<style>
+  body { font-family: sans-serif; padding: 20px; background: #f0f0f0; }
+  table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+  th, td { border: 1px solid #ccc; padding: 8px; text-align: left; vertical-align: top; }
+  th { background: #eee; }
+  .empty { color: #888; font-style: italic; }
+  .added { background-color: #d4f8d4; }
+</style>
+</head>
+<body>
+<h1>サーバー処理状況</h1>
+<div id="status">読み込み中...</div>
+
+<script>
+let previousData = null;
+
+async function fetchStatus() {
+  try {
+    const res = await fetch('https://siawaseok.f5.si/api/status');
+    const data = await res.json();
+    renderStatus(data);
+  } catch(e) {
+    document.getElementById('status').innerText = 'エラー: ' + e;
+  }
+}
+
+function renderStatus(data) {
+  const container = document.getElementById('status');
+  container.innerHTML = '';
+
+  // 処理中サーバー
+  const table = document.createElement('table');
+  const header = document.createElement('tr');
+  header.innerHTML = '<th>サーバー</th><th>処理中ID</th>';
+  table.appendChild(header);
+
+  for (const serverType of Object.keys(data.processing)) {
+    const ids = data.processing[serverType];
+    const tr = document.createElement('tr');
+    const tdServer = document.createElement('td');
+    tdServer.textContent = serverType;
+    tr.appendChild(tdServer);
+
+    const tdIds = document.createElement('td');
+
+    if (ids.length === 0) {
+      const span = document.createElement('span');
+      span.className = 'empty';
+      span.textContent = 'なし';
+      tdIds.appendChild(span);
+    } else {
+      ids.forEach((id, index) => {
+        const span = document.createElement('span');
+        span.textContent = id;
+        if (previousData && (!previousData.processing[serverType] || !previousData.processing[serverType].includes(id))) {
+          span.className = 'added';
+        }
+        tdIds.appendChild(span);
+        if (index < ids.length - 1) tdIds.appendChild(document.createTextNode(' , '));
+      });
+    }
+
+    tr.appendChild(tdIds);
+    table.appendChild(tr);
+  }
+
+  container.appendChild(table);
+
+  // 処理待ちキュー
+  const queueTable = document.createElement('table');
+  const qHeader = document.createElement('tr');
+  qHeader.innerHTML = '<th>処理待ちID</th>';
+  queueTable.appendChild(qHeader);
+
+  if (data.waiting_queue.length === 0) {
+    const tr = document.createElement('tr');
+    const td = document.createElement('td');
+    td.className = 'empty';
+    td.textContent = 'なし';
+    tr.appendChild(td);
+    queueTable.appendChild(tr);
+  } else {
+    data.waiting_queue.forEach(id => {
+      const tr = document.createElement('tr');
+      const tdId = document.createElement('td');
+      tdId.textContent = id;
+      if (previousData && !previousData.waiting_queue.includes(id)) {
+        tdId.className = 'added';
+      }
+      tr.appendChild(tdId);
+      queueTable.appendChild(tr);
+    });
+  }
+
+  container.appendChild(queueTable);
+  previousData = data;
+}
+
+// ページ読み込み時に取得
+fetchStatus();
+setInterval(fetchStatus, 1000);
+</script>
+</body>
+</html>
