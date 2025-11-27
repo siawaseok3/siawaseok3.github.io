@@ -36,7 +36,7 @@ function renderStatus(data) {
   // 処理中サーバー
   const table = document.createElement('table');
   const header = document.createElement('tr');
-  header.innerHTML = '<th>サーバー</th><th>処理中ID</th>';
+  header.innerHTML = '<th style="width: 300px;">サーバー</th><th>処理中ID</th>';
   table.appendChild(header);
 
   for (const serverType of Object.keys(data.processing)) {
